@@ -49,15 +49,3 @@ processEffects (fn:fns) acc = do fileExists <- SD.doesFileExist fn
                                              SI.hClose fd
                                              processEffects fns newacc
                                      else error $ "El nombre del archivo " ++ fn ++ " no existe."
-
--- | Función que lee cada efecto en un archivo y los retorna en un arreglo. 
-readDisplayInfo :: SI.Handle -> IO [Effects]
-readDisplayInfo h = do s <- SI.hGetContents h
-                       let a = lines s
-                           b = map read a :: [Effects]
-                       return $! (b)
-
-ledDisplay :: M.Map Char Pixels -> [Effects] -> IO ()
-ledDisplay m ef = undefined
-
-  
