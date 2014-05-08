@@ -1,0 +1,33 @@
+Casos bordes a tener en cuenta:
+
+para revisar los numeros:
+se cubre tabuladores y espacios en blanco
+
+para revisar el char
+se cubre que tenga mas de uno y menos de uno
+
+para revisar el numero de columnas, se hace de forma correcta
+
+para revisar el numero de filas...
+no lo hecho
+casos bordes a tener en cuenta
+tiene mas 
+	tiene linea en blanco
+	numero
+	lo que sea
+tiene menos
+	empieza algo distinto a lo esperado
+
+para los pixels q no estan en font
+replicate row ( replicate column "*")
+
+
+
+compilar codigo con:
+
+ghc -Wall -Werror <filename>
+
+ghc -Wall -Werror -fwarn-tabs -fwarn-incomplete-uni-patterns -fwarn-incomplete-record-updates -fwarn-monomorphism-restriction -fwarn-unrecognised-pragmas -fwarn-auto-orphans -fwarn-implicit-prelude <filename>
+
+
+haddock -h filename

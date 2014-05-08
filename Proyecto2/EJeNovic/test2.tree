@@ -1,0 +1,26 @@
+
+      Fork "n"
+                (Fork "k"
+                        (Fork "c"
+                                (Fork "a" Null Null)
+                                (Fork "h"
+                                        (Fork "g"
+                                                (Fork "e" Null Null)
+                                                Null
+                                        )
+                                        Null
+                                )
+                        )
+                        (Fork "m" Null Null)
+                )
+                (Fork "u"
+                        (Fork "p"
+                                Null
+                                (Fork "s"
+                                        (Fork "q" Null Null)
+                                        Null
+                                )
+                        )
+                        Null
+                )
+

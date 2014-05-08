@@ -1,0 +1,48 @@
+
+   Fork "1"
+  (Fork "2"
+    (Fork "3"
+      (Fork "4"
+        (Fork "5" Null Null)
+        (Fork "6" Null Null)
+      )
+      (Fork "7"
+        (Fork "8" Null Null)
+        (Fork "9" Null Null)
+      )
+    )
+    (Fork "10"
+      (Fork "11"
+        (Fork "12" Null Null)
+        (Fork "13" Null Null)
+      )
+      (Fork "14"
+        (Fork "15" Null Null)
+        (Fork "16" Null Null)
+      )
+    )
+  )
+  (Fork "17"
+    (Fork "18"
+      (Fork "19"
+        (Fork "20" Null Null)
+        (Fork "21" Null Null)
+      )
+      (Fork "22"
+        (Fork "23" Null Null)
+        (Fork "24" Null Null)
+      )
+    )
+    (Fork "25"
+      (Fork "26"
+        (Fork "27" Null Null)
+        (Fork "28" Null Null)
+      )
+      (Fork "29"
+        (Fork "30" Null Null)
+        (Fork "31" Null Null)
+      )
+    )
+  )
+
+
