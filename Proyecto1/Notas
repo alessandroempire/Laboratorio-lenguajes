@@ -1,0 +1,13 @@
+mapM putStrLn(font 'O')
+
+-- Función no exportada. Función auxiliar para probar cada función. 
+--probar :: [String] -> IO [()]
+--probar x = mapM putStrLn(x)
+
+compilar codigo con:
+
+ghc -Wall -Werror <filename>
+
+ghc -Wall -Werror -fwarn-tabs -fwarn-incomplete-uni-patterns -fwarn-incomplete-record-updates -fwarn-monomorphism-restriction -fwarn-unrecognised-pragmas -fwarn-auto-orphans -fwarn-implicit-prelude <filename>
+
+para haddock 
