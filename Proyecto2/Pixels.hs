@@ -128,3 +128,6 @@ toPixel array = Pixels {color = G.White, dots = map (map aux) array}
                      then Pixel {on = True}
                      else Pixel {on = False}  
 
+checkPixel :: Pixel -> Bool
+checkPixel p = (on p)
+                

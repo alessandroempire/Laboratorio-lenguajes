@@ -1,4 +1,4 @@
-Up
+Left
 Down
 Down
 Repeat 4 [ Up, Up, Up, Up ]

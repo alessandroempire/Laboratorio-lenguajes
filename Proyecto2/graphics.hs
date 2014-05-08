@@ -6,41 +6,44 @@ main = do draw
 draw = do G.runGraphics $ do 
             w <-G.openWindow "Drawing" (800,600)
             G.clearWindow w
-            --G.drawInWindow w $ G.overGraphics $ esfera (30,30) (30+3,30+3)
-            drawing w ((30,30), (40,40))
-            let a = drawI w "*** *" ((10,10),(13,13))
+            --a <- drawR w ((dots pix) !! 0) ((5,5),(8,8))
+            --b <- drawR w ((dots pix) !! 0) ((5,12),(8,15))
+            --print a 
+            a <- drawC w (dots pix) ((5,5), (8,8))
             print a
-            --G.drawInWindow w $ G.overGraphics $ esfera (30,41) (40,51)
-            --G.drawInWindow w $ G.overGraphics $ esfera (30,80) (40,90)
-            --G.drawInWindow w $ G.overGraphics $ esfera (30,100) (40,100)
-
---            G.drawInWindow w $ G.overGraphics $ esfera (45,25) (60,40)
+            print ((dots pix) !! 0)
+            print "hizo lo q tenia que hacer"
             G.getKey w
             G.closeWindow w    
 
---esfera :: Position -> Position -> [G.Graphic]
---esfera = undefined
+
 esfera a b = [G.ellipse a b]
 
 type Position = ((Int, Int), (Int,Int))
---coord x y = (x,y)
 
---layout :: Pixel -> pos
-{-
-layout (p:ps) pos = do drawP
-                       --dibujo p
-                       --layout ps newPos
-                       -}
+drawC w []     pos               = return (pos)
+drawC w (p:ps) ((x1,y1),(x2,y2)) = do let pos  = ((x1,y1+1), (x2,y2+1))
+                                          y    = snd $ snd pos
+                                          npos = ((x1,y+4), (x2,y+7)) 
+                                      newx <- drawR w p pos
+                                      drawC w ps npos
 
-drawI w ps ((x1,y1),(x2,y2)) = foldl aux ((x1,y1),(x2,y2)) ps 
-    where aux ((a1,b1),(a2,b2)) a = do drawing w ((a1,b1),(a2,b2))
-                                       ((a1+3,b1),(a2+3,b2))
-
---drawI w ps ((x1,y1), (x2,y2)) = 
-
+--drawI :: G.Window -> [Bool] -> Position -> IO ()
+drawR w []      pos              = do return (pos)
+drawR w (p:ps) ((x1,y1),(x2,y2)) = do 
+                                      let pos  = ((x1+1, y1), (x2+1, y2))
+                                          npos = ((x1+4, y1), (x2+4, y2))                                          
+                                      print pos
+                                      if (on p) 
+                                          then do print "si entra aqui"
+                                                  drawing w pos 
+                                                  drawR w ps npos
+                                          else do print "entra aqui"
+                                                  drawR w ps npos
 
 drawing w (pos1, pos2) = G.drawInWindow w $ G.overGraphics $ esfera (pos1) (pos2)
 
+---------------------ejemplo----------------------------------
 a = ["*   *","*   *"," * * ","  *  "," * * ","*   *","*   *"]
 pix = toPixel a 
 
@@ -49,3 +52,15 @@ toPixel array = Pixels {color = G.White, dots = map (map aux) array}
     where aux char = if char == '*' 
                      then Pixel {on = True}
                      else Pixel {on = False}    
+
+
+
+---comentarios
+            --G.drawInWindow w $ G.overGraphics $ esfera (30,41) (40,51)
+            --G.drawInWindow w $ G.overGraphics $ esfera (30,80) (40,90)
+            --G.drawInWindow w $ G.overGraphics $ esfera (30,100) (40,100)
+
+--          G.drawInWindow w $ G.overGraphics $ esfera (45,25) (60,40)                     
+           --G.drawInWindow w $ G.overGraphics $ esfera (30,30) (30+3,30+3)
+            --drawing w ((30,30), (40,40))
+

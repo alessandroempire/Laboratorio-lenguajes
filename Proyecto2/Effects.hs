@@ -14,8 +14,14 @@ module Effects (
                 Effects (..)
 
                 -- * Funciones que operan sobre el tipo Effects
-                , readDisplayInfo                    -- :: Handle -> IO [Effects]
-                , ledDisplay                         -- :: Map Char Pixels -> [Effects] -> IO ()
+                , stringToPixel                      -- :: String -> Map Char Pixels -> Pixels
+                , up                                 -- :: Pixels -> Pixels
+                , down                               -- :: Pixels -> Pixels
+                , left                               -- :: Pixels -> Pixels
+                , right                              -- :: Pixels -> Pixels
+                , upsideDown                         -- :: Pixels -> Pixels
+                , backwards                          -- :: Pixels -> Pixels
+                , negative                           -- :: Pixels -> Pixels
                ) where
 
 import qualified Graphics.HGL as G
@@ -37,38 +43,6 @@ data Effects = Say String
              | Repeat Integer [Effects]
              | Forever [Effects]
      deriving (Show, Read) 
-
-
--- | Función que lee cada efecto en un archivo y los retorna en un arreglo. 
-readDisplayInfo :: SI.Handle -> IO [Effects]
-readDisplayInfo h = do s <- SI.hGetContents h
-                       let a = lines s
-                           b = map read a :: [Effects]
-                       return $! (b)
-
-ledDisplay :: M.Map Char Pixels -> [Effects] -> IO ()
-ledDisplay m []     = print "se acabo"
-ledDisplay m (e:es) = do print e
-                         applyEffect e
-                         ledDisplay m es
-
--- \ESC es la tecla escape
-  
- --applyEffects ::
-applyEffect (Say a)         = do print "en say"
-applyEffect (Up)            = do print "en up"
-applyEffect (Down)          = do print "en down"
-applyEffect (Effects.Left)  = do print "en left"
-applyEffect (Effects.Right) = do print "en right"
-applyEffect (Backwards)     = do print "en back"
-applyEffect (UpsideDown)    = do print "en upside"
-applyEffect (Negative)      = do print "en negative"
-applyEffect (Delay i)       = do print "en delay"
-applyEffect (Color c)       = do print "en color"
-applyEffect (Forever xs)    = do print "en forever"
-                                 print xs 
-applyEffect (Repeat i xs)   = do print "en repeat"
-
 
 -- | Función que convierte una palabra a un Pixel de color White.
 stringToPixel :: String -> M.Map Char Pixels -> Pixels
