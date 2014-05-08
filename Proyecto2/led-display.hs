@@ -14,6 +14,7 @@ import qualified System.IO as SI
 import qualified Data.Map as M
 import qualified Graphics.HGL as G
 import Data.List (intercalate)
+--import Data.Maybe
 import Pixels
 import Effects
 
@@ -56,9 +57,21 @@ processEffects (fn:fns) acc = do fileExists <- SD.doesFileExist fn
 --readDisplayInfo :: SI.Handle -> IO [Effects]
 readDisplayInfo h = do s <- SI.hGetContents h
                        let a = lines s
+                           b = checkf a
                        print a
+                       --checkf a
                            --b = map read a :: [Effects]
                        --return $! (b)
+
+--checkf ::
+checkf (a:as) = do 
+                   if largo == 0
+                       then Just []
+                       else if vacio
+                           then Just []
+                           else Nothing
+    where largo = length a
+          vacio = and $ map (== ' ') a
 
 ledDisplay :: M.Map Char Pixels -> [Effects] -> IO ()
 ledDisplay m []     = print "se acabo"
