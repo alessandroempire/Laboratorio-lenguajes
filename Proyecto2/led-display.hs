@@ -98,7 +98,6 @@ applyEffect [] _ w _                  = do putStrLn "Se leyeron todos los efecto
 applyEffect ((Say a):es) m w _        = do G.clearWindow w
                                            let s = stringToPixel a m
                                            drawC w (dots s) ini (color s)
-                                           --print a
                                            applyEffect es m w s
  
 applyEffect ((Up):es) m w p           = do G.clearWindow w
@@ -136,7 +135,7 @@ applyEffect ((Negative):es) m w p      = do G.clearWindow w
                                             drawC w (dots np) ini (color np)
                                             applyEffect es m w np
 
-applyEffect ((Delay i):es) m w p       = do drawC w (dots p) ini (color p)
+applyEffect ((Delay i):es) m w p       = do drawC w (dots p) ini (color p) --falta aqui
                                             threadDelay $ fromEnum i
                                             applyEffect es m w p
 
