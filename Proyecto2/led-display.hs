@@ -32,8 +32,8 @@ processFont (fn:fns) = do fileExists <- SD.doesFileExist fn
                                      m <- readFont fd
                                      SI.hClose fd
                                      e <- processEffects fns []
-                                     print m
-                                     print e
+                                     --print m
+                                     --print e
                                      ledDisplay m e
                              else    error $ "El nombre del archivo " ++ fn ++ " no existe."
 
@@ -57,12 +57,11 @@ processEffects (fn:fns) acc = do fileExists <- SD.doesFileExist fn
 readDisplayInfo h = do s <- SI.hGetContents h
                        let a = lines s
                            b = checkf a
+                       print a
                        if isNothing b
-                           then do print "entra isNothing"
-                                   return $! ([])
-                           else do let c = map read a :: [Effects]
-                                   print "entra aqui"
+                           then do let c = map read a :: [Effects]
                                    return $! (c)
+                           else return ([])
 
 --checkf ::
 checkf (a:as) = do if largo == 0
@@ -104,9 +103,6 @@ applyEffect (Forever xs)    = do print "en forever"
 applyEffect (Repeat i xs)   = do print "en repeat"
 -}
 
-
-
-
 type Position = ((Int, Int), (Int,Int))
 
 --esfera :: 
@@ -122,16 +118,12 @@ drawC w (p:ps) ((x1,y1),(x2,y2)) = do let pos  = ((x1,y1+1), (x2,y2+1))
 
 --drawI :: G.Window -> [Bool] -> Position -> IO ()
 drawR w []      pos              = do return (pos)
-drawR w (p:ps) ((x1,y1),(x2,y2)) = do 
-                                      let pos  = ((x1+1, y1), (x2+1, y2))
-                                          npos = ((x1+4, y1), (x2+4, y2))                                          
-                                      print pos
+drawR w (p:ps) ((x1,y1),(x2,y2)) = do let pos  = ((x1+1, y1), (x2+1, y2))
+                                          npos = ((x1+4, y1), (x2+4, y2))
                                       if (on p) 
-                                          then do print "si entra aqui"
-                                                  drawing w pos 
+                                          then do drawing w pos 
                                                   drawR w ps npos
-                                          else do print "entra aqui"
-                                                  drawR w ps npos
+                                          else do drawR w ps npos
 
 --drawing ::
 drawing w (pos1, pos2) = G.drawInWindow w $ G.overGraphics $ esfera (pos1) (pos2)                                         
