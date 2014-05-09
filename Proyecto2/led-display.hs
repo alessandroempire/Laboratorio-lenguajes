@@ -14,7 +14,7 @@ import qualified System.IO as SI
 import qualified Data.Map as M
 import qualified Graphics.HGL as G
 import Data.List (intercalate)
---import Data.Maybe
+import Data.Maybe (isNothing)
 import Pixels
 import Effects
 
@@ -45,12 +45,11 @@ processEffects (fn:fns) acc = do fileExists <- SD.doesFileExist fn
                                  if fileExists
                                      then do fd <- SI.openFile fn SI.ReadMode
                                              putStrLn $ "Procesando " ++ fn
-                                             --e <- readDisplayInfo fd
-                                             readDisplayInfo fd
-                                             --let newacc = (:) e acc
+                                             e <- readDisplayInfo fd
+                                             let newacc =  e : acc
                                              SI.hClose fd
-                                             --processEffects fns newacc
-                                             processEffects fns acc
+                                             print e
+                                             processEffects fns newacc
                                      else error $ "El nombre del archivo " ++ fn ++ " no existe."
 
 -- | Función que lee cada efecto en un archivo y los retorna en un arreglo. 
@@ -58,14 +57,15 @@ processEffects (fn:fns) acc = do fileExists <- SD.doesFileExist fn
 readDisplayInfo h = do s <- SI.hGetContents h
                        let a = lines s
                            b = checkf a
-                       print a
-                       --checkf a
-                           --b = map read a :: [Effects]
-                       --return $! (b)
+                       if isNothing b
+                           then do print "entra isNothing"
+                                   return $! ([])
+                           else do let c = map read a :: [Effects]
+                                   print "entra aqui"
+                                   return $! (c)
 
 --checkf ::
-checkf (a:as) = do 
-                   if largo == 0
+checkf (a:as) = do if largo == 0
                        then Just []
                        else if vacio
                            then Just []
