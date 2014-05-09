@@ -15,6 +15,9 @@ module Pixels (
               Pixels (..)                -- :: Pixels { color = Color, dots = Pixel }
               ,Pixel (..)                -- :: Pixel  { on :: Boolean }
 
+              -- * Valor neutro del tipo Pixels.
+              ,defaultP
+
               -- * Funciones que operan sobre los Pixels.
               , font                     -- :: Map Char Pixels -> Char -> Pixels
               , readFont                 -- :: Handle -> IO (Map Char Pixels)
@@ -33,6 +36,9 @@ data Pixels = Pixels { color :: G.Color, dots  :: [[Pixel]] }
 
 data Pixel = Pixel { on :: Boolean }
      deriving (Show, Eq)
+
+-- | Valor neutro del tipo Pixels
+defaultP = Pixels {color = G.White, dots = [[]] }
 
 -- | Función que encuentra el pixel correspondiente a un caracter. 
 font :: M.Map Char Pixels -> Char -> Pixels

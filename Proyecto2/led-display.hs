@@ -48,7 +48,6 @@ processEffects (fn:fns) acc = do fileExists <- SD.doesFileExist fn
                                              e <- readDisplayInfo fd
                                              let newacc =  e : acc
                                              SI.hClose fd
-                                             print e
                                              processEffects fns newacc
                                      else error $ "El nombre del archivo " ++ fn ++ " no existe."
 
@@ -57,7 +56,6 @@ processEffects (fn:fns) acc = do fileExists <- SD.doesFileExist fn
 readDisplayInfo h = do s <- SI.hGetContents h
                        let a = lines s
                            b = checkf a
-                       print a
                        if isNothing b
                            then do let c = map read a :: [Effects]
                                    return $! (c)
@@ -74,28 +72,66 @@ checkf (a:as) = do if largo == 0
 
 ledDisplay :: M.Map Char Pixels -> [Effects] -> IO ()
 ledDisplay m []     = print "se acabo"
-ledDisplay m (e:es) = do G.runGraphics $ do
+ledDisplay m es = do G.runGraphics $ do
                             w <- G.openWindow "Pixels" (800,600)
                             G.clearWindow w                            
-                            applyEffect e m w
-                            -- pos <- drawR w (dots pix
-                            --acuerdate del getkey
-                            ledDisplay m es
+                            applyEffect es m w defaultP
+                            key <- G.getKey w
+                            print "hola" 
+                            --if G.isEscapeKey key
+                              --  then do putStrLn "Hasta Luego."
+                                --        return ()
+                                --else do Nothing
+                            --ledDisplay m es
 
 -- \ESC es la tecla escape
   
  --applyEffects ::
-applyEffect (Say a) m w     = do let s = stringToPixel a m
-                                 pos <- drawC w (dots s) ((5,5), (8,8))
-                                 return s
-{-                                 
-applyEffect (Up)            = do print "en up"  --modificar mensaje e print
-applyEffect (Down)          = do print "en down" 
-applyEffect (Effects.Left)  = do print "en left"
-applyEffect (Effects.Right) = do print "en right"
-applyEffect (Backwards)     = do print "en back"
-applyEffect (UpsideDown)    = do print "en upside"
-applyEffect (Negative)      = do print "en negative"
+applyEffect [] _ _ _                  = do putStrLn "Se leyeron todos los efectos."
+                                           putStrLn "Hasta Luego!."
+                                           return ()
+
+applyEffect ((Say a):es) m w _        = do G.clearWindow w
+                                           let s = stringToPixel a m
+                                           drawC w (dots s) ((5,5), (8,8))
+                                           G.getKey w
+                                           applyEffect es m w s
+ 
+applyEffect ((Up):es) m w p           = do G.clearWindow w
+                                           let np = up p
+                                           drawC w (dots np) ((5,5), (8,8))
+                                           applyEffect es m w p
+
+applyEffect ((Down):es) m w p         = do G.clearWindow w
+                                           let np = down p
+                                           drawC w (dots np) ((5,5), (8,8))
+                                           applyEffect es m w p
+
+applyEffect ((Effects.Left):es) m w p = do G.clearWindow w
+                                           let np = left p
+                                           drawC w (dots np) ((5,5), (8,8))
+                                           applyEffect es m w p
+
+applyEffect ((Effects.Right):es) m w p = do G.clearWindow w
+                                            let np = right p
+                                            drawC w (dots np) ((5,5), (8,8))
+                                            applyEffect es m w p
+
+applyEffect ((Backwards):es) m w p     = do G.clearWindow w
+                                            let np = backwards p
+                                            drawC w (dots np) ((5,5), (8,8))
+                                            applyEffect es m w p
+
+applyEffect ((UpsideDown):es) m w p    = do G.clearWindow w
+                                            let np = upsideDown p
+                                            drawC w (dots np) ((5,5), (8,8))
+                                            applyEffect es m w p
+
+applyEffect ((Negative):es) m w p      = do G.clearWindow w
+                                            let np = down p
+                                            drawC w (dots np) ((5,5), (8,8))
+                                            applyEffect es m w p
+{-
 applyEffect (Delay i)       = do print "en delay"
 applyEffect (Color c)       = do print "en color"
 applyEffect (Forever xs)    = do print "en forever"
