@@ -1,3 +1,2 @@
 Say "HOLAX"
-Delay 500005
-Say "H"
+Forever [Up, Delay 500, Up, Delay 500]

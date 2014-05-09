@@ -53,7 +53,7 @@ readFont :: SI.Handle -> IO (M.Map Char Pixels)
 readFont h = do s <- SI.hGetContents h
                 let l     = lines s
                     n     = words $ head l
-                    f     = map init $ tail l
+                    f     = tail l
                     nums  = checkNum n
                     allOn = allOnPix (nums !! 0) (nums !! 1)
                     amap  = M.insert '\a' allOn (M.empty)
