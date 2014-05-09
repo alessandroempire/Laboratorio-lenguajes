@@ -76,9 +76,7 @@ ledDisplay m []     = print "se acabo"
 ledDisplay m es = do G.runGraphics $ do
                             w <- G.openWindow "Pixels" (800,600)
                             G.clearWindow w                            
-                            applyEffect es m w defaultP
-                            key <- G.getKey w
-                            print "hola" 
+                            applyEffect es m w defaultP 
                             --if G.isEscapeKey key
                               --  then do putStrLn "Hasta Luego."
                                 --        return ()
