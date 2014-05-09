@@ -91,8 +91,10 @@ ledDisplay m es = do G.runGraphics $ do
 ini = ((5,5), (8,8))
   
  --applyEffects ::
-applyEffect [] _ _ _                  = do putStrLn "Se leyeron todos los efectos."
+applyEffect [] _ w _                  = do putStrLn "Se leyeron todos los efectos."
                                            putStrLn "Hasta Luego!."
+                                           G.getKey w
+                                           G.closeWindow w
                                            return ()
 
 applyEffect ((Say a):es) m w _        = do G.clearWindow w
