@@ -13,6 +13,7 @@ import qualified System.Directory as SD
 import qualified System.IO as SI 
 import qualified Data.Map as M
 import qualified Graphics.HGL as G
+import Control.Concurrent (threadDelay)
 import Data.List (intercalate)
 import Data.Maybe (isNothing)
 import Pixels
@@ -86,6 +87,9 @@ ledDisplay m es = do G.runGraphics $ do
 
 -- \ESC es la tecla escape
   
+--Valor inicial de la posición del Pixel en la pantalla
+ini = ((5,5), (8,8))
+  
  --applyEffects ::
 applyEffect [] _ _ _                  = do putStrLn "Se leyeron todos los efectos."
                                            putStrLn "Hasta Luego!."
@@ -93,47 +97,54 @@ applyEffect [] _ _ _                  = do putStrLn "Se leyeron todos los efecto
 
 applyEffect ((Say a):es) m w _        = do G.clearWindow w
                                            let s = stringToPixel a m
-                                           drawC w (dots s) ((5,5), (8,8))
-                                           G.getKey w
+                                           drawC w (dots s) ini (color s)
+                                           --print a
                                            applyEffect es m w s
  
 applyEffect ((Up):es) m w p           = do G.clearWindow w
                                            let np = up p
-                                           drawC w (dots np) ((5,5), (8,8))
-                                           applyEffect es m w p
+                                           drawC w (dots np) ini (color np)
+                                           applyEffect es m w np
 
 applyEffect ((Down):es) m w p         = do G.clearWindow w
                                            let np = down p
-                                           drawC w (dots np) ((5,5), (8,8))
-                                           applyEffect es m w p
+                                           drawC w (dots np) ini (color np)
+                                           applyEffect es m w np
 
 applyEffect ((Effects.Left):es) m w p = do G.clearWindow w
                                            let np = left p
-                                           drawC w (dots np) ((5,5), (8,8))
-                                           applyEffect es m w p
+                                           drawC w (dots np) ini (color np)
+                                           applyEffect es m w np
 
 applyEffect ((Effects.Right):es) m w p = do G.clearWindow w
                                             let np = right p
-                                            drawC w (dots np) ((5,5), (8,8))
-                                            applyEffect es m w p
+                                            drawC w (dots np) ini (color np)
+                                            applyEffect es m w np
 
 applyEffect ((Backwards):es) m w p     = do G.clearWindow w
                                             let np = backwards p
-                                            drawC w (dots np) ((5,5), (8,8))
-                                            applyEffect es m w p
+                                            drawC w (dots np) ini (color np)
+                                            applyEffect es m w np
 
 applyEffect ((UpsideDown):es) m w p    = do G.clearWindow w
                                             let np = upsideDown p
-                                            drawC w (dots np) ((5,5), (8,8))
-                                            applyEffect es m w p
+                                            drawC w (dots np) ini (color np)
+                                            applyEffect es m w np
 
 applyEffect ((Negative):es) m w p      = do G.clearWindow w
-                                            let np = down p
-                                            drawC w (dots np) ((5,5), (8,8))
+                                            let np = negative p
+                                            drawC w (dots np) ini (color np)
+                                            applyEffect es m w np
+
+applyEffect ((Delay i):es) m w p       = do drawC w (dots p) ini (color p)
+                                            threadDelay $ fromEnum i
                                             applyEffect es m w p
+
+applyEffect ((Color c):es) m w p       = do G.clearWindow w
+                                            let newc = changeColor p c
+                                            drawC w (dots p) ini (color newc)
+                                            applyEffect es m w newc
 {-
-applyEffect (Delay i)       = do print "en delay"
-applyEffect (Color c)       = do print "en color"
 applyEffect (Forever xs)    = do print "en forever"
                                  print xs 
 applyEffect (Repeat i xs)   = do print "en repeat"
@@ -145,21 +156,21 @@ type Position = ((Int, Int), (Int,Int))
 esfera a b = [G.ellipse a b]
 
 --drawC ::
-drawC w []     pos               = return (pos)
-drawC w (p:ps) ((x1,y1),(x2,y2)) = do let pos  = ((x1,y1+1), (x2,y2+1))
-                                          y    = snd $ snd pos
-                                          npos = ((x1,y+4), (x2,y+7)) 
-                                      newx <- drawR w p pos
-                                      drawC w ps npos
+drawC w []     pos               color = return ()
+drawC w (p:ps) ((x1,y1),(x2,y2)) color = do let pos  = ((x1,y1+1), (x2,y2+1))
+                                                y    = snd $ snd pos
+                                                npos = ((x1,y+4), (x2,y+7)) 
+                                            newx <- drawR w p pos color
+                                            drawC w ps npos color
 
 --drawI :: G.Window -> [Bool] -> Position -> IO ()
-drawR w []      pos              = do return (pos)
-drawR w (p:ps) ((x1,y1),(x2,y2)) = do let pos  = ((x1+1, y1), (x2+1, y2))
-                                          npos = ((x1+4, y1), (x2+4, y2))
-                                      if (on p) 
-                                          then do drawing w pos 
-                                                  drawR w ps npos
-                                          else do drawR w ps npos
+drawR w []      pos              color = do return (pos)
+drawR w (p:ps) ((x1,y1),(x2,y2)) color = do let pos  = ((x1+1, y1), (x2+1, y2))
+                                                npos = ((x1+4, y1), (x2+4, y2))
+                                            if (on p) 
+                                                then do drawing w pos color
+                                                        drawR w ps npos color
+                                                else do drawR w ps npos color
 
 --drawing ::
-drawing w (pos1, pos2) = G.drawInWindow w $ G.overGraphics $ esfera (pos1) (pos2)                                         
+drawing w (pos1, pos2) color = G.drawInWindow w $ G.withColor color $ G.overGraphics $ esfera (pos1) (pos2)                                         

@@ -1,2 +1,3 @@
 Say "HOLAX"
-Negative
+Delay 500005
+Say "H"

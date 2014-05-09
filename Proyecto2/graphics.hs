@@ -10,7 +10,7 @@ draw = do G.runGraphics $ do
             --b <- drawR w ((dots pix) !! 0) ((5,12),(8,15))
             --print a 
             a <- drawC w (dots pix) ((5,5), (8,8))
-            print a
+            --print a
             print ((dots pix) !! 0)
             print "hizo lo q tenia que hacer"
             G.getKey w
@@ -32,16 +32,13 @@ drawC w (p:ps) ((x1,y1),(x2,y2)) = do let pos  = ((x1,y1+1), (x2,y2+1))
 drawR w []      pos              = do return (pos)
 drawR w (p:ps) ((x1,y1),(x2,y2)) = do 
                                       let pos  = ((x1+1, y1), (x2+1, y2))
-                                          npos = ((x1+4, y1), (x2+4, y2))                                          
-                                      print pos
+                                          npos = ((x1+4, y1), (x2+4, y2))        
                                       if (on p) 
-                                          then do print "si entra aqui"
-                                                  drawing w pos 
+                                          then do drawing w pos
                                                   drawR w ps npos
-                                          else do print "entra aqui"
-                                                  drawR w ps npos
+                                          else do drawR w ps npos
 
-drawing w (pos1, pos2) = G.drawInWindow w $ G.overGraphics $ esfera (pos1) (pos2)
+drawing w (pos1, pos2) = G.drawInWindow w $ G.withColor G.Red $ G.overGraphics $ esfera (pos1) (pos2)
 
 ---------------------ejemplo----------------------------------
 a = ["*   *","*   *"," * * ","  *  "," * * ","*   *","*   *"]

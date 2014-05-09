@@ -15,6 +15,7 @@ module Effects (
 
                 -- * Funciones que operan sobre el tipo Effects
                 , stringToPixel                      -- :: String -> Map Char Pixels -> Pixels
+                , changeColor                        -- :: Pixels -> Pixels
                 , up                                 -- :: Pixels -> Pixels
                 , down                               -- :: Pixels -> Pixels
                 , left                               -- :: Pixels -> Pixels
@@ -49,6 +50,10 @@ stringToPixel :: String -> M.Map Char Pixels -> Pixels
 stringToPixel cs pMap = Pixels {color = G.White, dots = toPix}
     where toPix           = map (intercalate [Pixel {on = False}]) $transpose $ foldr concatPix [] cs
           concatPix c acc = dots (font pMap c) : acc
+
+-- | Función que cambia el color de un Pixels.
+changeColor :: Pixels -> G.Color -> Pixels
+changeColor p c = Pixels { color = c, dots = dots p}
 
 {- |
     Función que desplaza una hilera hacia arriba.
