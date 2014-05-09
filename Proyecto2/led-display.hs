@@ -80,12 +80,13 @@ ledDisplay m es = do G.runGraphics $ do
                             applyEffect es m w defaultP 
                             G.getKey w
                             G.closeWindow w
+
+
                             --if G.isEscapeKey key
                               --  then do putStrLn "Hasta Luego."
                                 --        return ()
                                 --else do Nothing
                             --ledDisplay m es
-
 -- \ESC es la tecla escape
   
 --Valor inicial de la posición del Pixel en la pantalla
@@ -96,7 +97,7 @@ applyEffect [] _ w p                  = return(p)
 
 applyEffect ((Say a):es) m w _        = do G.clearWindow w
                                            let s = stringToPixel a m
-                                           drawC w (dots s) ini (color s)
+                                           p <- drawC w (dots s) ini (color s)
                                            --forzar evaluciacion aqui
                                            applyEffect es m w s
  
