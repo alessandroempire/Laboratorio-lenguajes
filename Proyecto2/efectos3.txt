@@ -1,2 +1,2 @@
-Repeat 10 [ Up, Down, Say "Hola"]
-Say "tutancamo"
+Repeat 2 [Up, Down, Right, Down, Say "HOLA", Up, Left]
+Up 
