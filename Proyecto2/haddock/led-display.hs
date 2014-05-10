@@ -61,13 +61,26 @@ processEffects (fn:fns) acc = do fileExists <- SD.doesFileExist fn
 readDisplayInfo :: SI.Handle -> IO [Effects]
 readDisplayInfo h = do s <- SI.hGetContents h
                        let l = lines s
-                           p = map readEffects l
-                       return $! (p)
+                           b = checkf l
+                       if isNothing b
+                           then do let p = map readEffects l
+                                   return $! (p)
+                           else return ([])
 
 readEffects :: String -> Effects
 readEffects s = case filter (null . dropWhile isSpace . snd) (reads s) of
                   [(a, _)] -> a
                   x       -> error "Error: invalida sintaxis en archivo de efectos."
+
+checkf :: [[Char]] -> Maybe [a]
+checkf (a:as) = do if largo == 0
+                       then Just []
+                       else if vacio
+                           then Just []
+                           else Nothing
+    where largo = length a
+          vacio = and $ map (== ' ') a
+
 
 ledDisplay :: M.Map Char Pixels -> [Effects] -> IO ()
 ledDisplay m []     = print "Hasta Luego."
