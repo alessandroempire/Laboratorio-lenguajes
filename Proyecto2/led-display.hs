@@ -52,11 +52,9 @@ processEffects (fn:fns) acc = do fileExists <- SD.doesFileExist fn
                                      then do fd <- SI.openFile fn SI.ReadMode
                                              putStrLn $ "Procesando " ++ fn
                                              e <- readDisplayInfo fd
-                                             --readDisplayInfo fd --borrar
                                              let newacc =  e : acc
                                              SI.hClose fd
                                              processEffects fns newacc
-                                             --processEffects [] acc--borrar
                                      else error $ "El nombre del archivo " ++ fn ++ " no existe."
 
 -- | Función que lee cada efecto en un archivo y los retorna en un arreglo. 
@@ -66,17 +64,18 @@ readDisplayInfo h = do s <- SI.hGetContents h
                        print s
                        let a = readEffects s
                        print "el a"
-                       --print a
+                       print a
                        print "?"
 
 readEffects :: String -> Effects
-readEffects s = case filter (null . snd) (reads s) of
+readEffects s = case filter (null . fst) (reads s) of
                   [(a, _)] -> a
-                  x        -> error "Error: invalida sintaxis en archivo de efectos."
+                  x       -> error "Error: invalida sintaxis en archivo de efectos."
 
 --isSpace
-isSpace char = if char == ' ' then True
-                              else False
+isSpace string = and $ map ( == ' ' ) string
+--isSpace char = if char == ' ' then True
+  --                            else False
 -}
 
 readDisplayInfo h = do s <- SI.hGetContents h
@@ -101,10 +100,6 @@ ledDisplay m []     = print "se acabo"
 ledDisplay m es = do G.runGraphics $ do
                             let t = getsize es
                                 d = getWsize m t
-                            putStrLn $ "el d es "
-                            print d
-                            print t
-                            --w <- G.openWindow "Pixels" (500,500)
                             w <- G.openWindow "Pixels" d
                             G.clearWindow w
                             thread <- forkIO $ do 
@@ -127,16 +122,26 @@ endless w thread = do
 -- | Función que calcula la longitud mas larga de todos los efectos posibles.
 getsize :: [Effects] -> Int
 getsize eff = foldl gsize 0 eff
-    where gsize acc (Say a) = if largo > acc
-                                 then largo
-                                 else acc
-                              where largo = length a
-          gsize acc  _      = acc
+    where gsize acc (Say a)       = if largo > acc
+                                        then largo
+                                        else acc
+                                    where largo = length a
+          gsize acc (Repeat i xs) = if newacc > acc
+                                         then newacc
+                                         else acc 
+                                    where newacc = getsize xs
+          gsize acc (Forever  xs) = if newacc > acc 
+                                         then newacc
+                                         else acc
+                                    where newacc = getsize xs 
+          gsize acc  _            = acc
 
 -- | Función que calcula las dimensiones de la pantalla a mostrar. 
 getWsize :: M.Map Char Pixels -> Int -> (Int, Int)
-getWsize m n = ( (n * column * 3) + n*(column + column) + n*5 , 
-                ( row * 3 + row + 1) + 5   )
+getWsize m n = if n /= 0
+                  then ( (n * column * 3) + n*(column + column) + n*5 , 
+                       ( row * 3 + row + 1) + 5   )
+                  else (30, 30)
     where pix    = dots $ m M.! '\a'
           row    = length pix
           column = length $ head pix
@@ -151,7 +156,6 @@ applyEffect [] _ w p                  = return(p)
 applyEffect ((Say a):es) m w _        = do G.clearWindow w
                                            let s = stringToPixel a m
                                            p <- drawC w (dots s) ini (color s)
-                                           --forzar evaluciacion aqui
                                            applyEffect es m w s
  
 applyEffect ((Up):es) m w p           = do 
@@ -229,8 +233,6 @@ drawR w []      pos              color = do return (pos)
 drawR w (p:ps) ((x1,y1),(x2,y2)) color = do let pos  = ((x1+1, y1), (x2+1, y2))
                                                 x    = fst $ snd pos
                                                 npos = ((x+1, y1), (x+4, y2))
-                                            print pos
-                                            print npos
                                             if (on p) 
                                                 then do drawing w pos color
                                                         drawR w ps npos color

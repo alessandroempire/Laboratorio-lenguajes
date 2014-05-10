@@ -1,1 +1,2 @@
-Say "HHHHHRRRRRRRRRRRRRH"
+Repeat 10 [ Up, Down, Say "Hola"]
+Say "tutancamo"
