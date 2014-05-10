@@ -35,12 +35,11 @@ processFont (fn:fns) = do fileExists <- SD.doesFileExist fn
                                      print fns
                                      checkEffects fns
                                      e <- processEffects fns []
-                                     --print m
                                      --print e
                                      ledDisplay m e
                              else    error $ "El nombre del archivo " ++ fn ++ " no existe."
 
---checkEffects ::
+checkEffects :: Monad m => [t] -> m ()
 checkEffects [] = error "Error: Se debe suministrar al menos un archivo de efectos." 
 checkEffects fns = return ()
 
@@ -61,7 +60,7 @@ processEffects (fn:fns) acc = do fileExists <- SD.doesFileExist fn
                                      else error $ "El nombre del archivo " ++ fn ++ " no existe."
 
 -- | Función que lee cada efecto en un archivo y los retorna en un arreglo. 
---readDisplayInfo :: SI.Handle -> IO [Effects]
+readDisplayInfo :: SI.Handle -> IO [Effects]
 {-
 readDisplayInfo h = do s <- SI.hGetContents h
                        print s
@@ -88,7 +87,7 @@ readDisplayInfo h = do s <- SI.hGetContents h
                                    return $! (c)
                            else return ([])
 
---checkf ::
+checkf :: [[Char]] -> Maybe [a]
 checkf (a:as) = do if largo == 0
                        then Just []
                        else if vacio
@@ -107,17 +106,14 @@ ledDisplay m es = do G.runGraphics $ do
                             print t
                             --w <- G.openWindow "Pixels" (500,500)
                             w <- G.openWindow "Pixels" d
-                            --poner tamano segun mensaje mas largo
-                            G.clearWindow w                            
-                            --antes de llamar a apply montar thread
-                            --createThread w
+                            G.clearWindow w
                             thread <- forkIO $ do 
                                                   applyEffect es m w defaultP
                                                   G.getKey w
                                                   G.closeWindow w
                             endless w thread                     
 
-
+-- | Función la cual monitorea si el usuario presiona la telca ESC
 endless :: G.Window -> ThreadId -> IO ()
 endless w thread = do 
                       key <- G.getKey w 
@@ -128,7 +124,7 @@ endless w thread = do
                                   return ()
                           else endless w thread
 
-
+-- | Función que calcula la longitud mas larga de todos los efectos posibles.
 getsize :: [Effects] -> Int
 getsize eff = foldl gsize 0 eff
     where gsize acc (Say a) = if largo > acc
@@ -137,6 +133,7 @@ getsize eff = foldl gsize 0 eff
                               where largo = length a
           gsize acc  _      = acc
 
+-- | Función que calcula las dimensiones de la pantalla a mostrar. 
 getWsize :: M.Map Char Pixels -> Int -> (Int, Int)
 getWsize m n = ( (n * column * 3) + n*(column + column) + n*5 , 
                 ( row * 3 + row + 1) + 5   )
@@ -147,7 +144,7 @@ getWsize m n = ( (n * column * 3) + n*(column + column) + n*5 ,
 --Valor inicial de la posición del Pixel en la pantalla.
 ini = ((0,0), (3,3))
   
--- Función que determina cual efecto se debe aplicar. 
+-- | Función que determina cual efecto se debe aplicar. 
 applyEffect :: [Effects] -> M.Map Char Pixels -> G.Window -> Pixels -> IO Pixels
 applyEffect [] _ w p                  = return(p)
 
