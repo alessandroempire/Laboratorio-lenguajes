@@ -1,5 +1,6 @@
 -----------------------------------------------------
 {- 
+Module  
 Description : .... 
 CopyRight   : (c) Alessandro La Corte
                   Ivanhoe Gamarra
@@ -12,6 +13,7 @@ import qualified System.Directory as SD
 import qualified System.IO as SI 
 import qualified Data.Map as M
 import qualified Graphics.HGL as G
+import Data.Char
 import Control.Concurrent
 import Data.List (intercalate)
 import Data.Maybe (isNothing)
@@ -34,7 +36,6 @@ processFont (fn:fns) = do fileExists <- SD.doesFileExist fn
                                      print fns
                                      checkEffects fns
                                      e <- processEffects fns []
-                                     --print e
                                      ledDisplay m e
                              else    error $ "El nombre del archivo " ++ fn ++ " no existe."
 
@@ -58,44 +59,18 @@ processEffects (fn:fns) acc = do fileExists <- SD.doesFileExist fn
 
 -- | Función que lee cada efecto en un archivo y los retorna en un arreglo. 
 readDisplayInfo :: SI.Handle -> IO [Effects]
-{-
 readDisplayInfo h = do s <- SI.hGetContents h
-                       print s
-                       let a = readEffects s
-                       print "el a"
-                       print a
-                       print "?"
+                       let l = lines s
+                           p = map readEffects l
+                       return $! (p)
 
 readEffects :: String -> Effects
-readEffects s = case filter (null . fst) (reads s) of
+readEffects s = case filter (null . dropWhile isSpace . snd) (reads s) of
                   [(a, _)] -> a
                   x       -> error "Error: invalida sintaxis en archivo de efectos."
 
---isSpace
-isSpace string = and $ map ( == ' ' ) string
---isSpace char = if char == ' ' then True
-  --                            else False
--}
-
-readDisplayInfo h = do s <- SI.hGetContents h
-                       let a = lines s
-                           b = checkf a
-                       if isNothing b
-                           then do let c = map read a :: [Effects]
-                                   return $! (c)
-                           else return ([])
-
-checkf :: [[Char]] -> Maybe [a]
-checkf (a:as) = do if largo == 0
-                       then Just []
-                       else if vacio
-                           then Just []
-                           else Nothing
-    where largo = length a
-          vacio = and $ map (== ' ') a
-
 ledDisplay :: M.Map Char Pixels -> [Effects] -> IO ()
-ledDisplay m []     = print "se acabo"
+ledDisplay m []     = print "Hasta Luego."
 ledDisplay m es = do G.runGraphics $ do
                             let t = getsize es
                                 d = getWsize m t
