@@ -67,7 +67,6 @@ readf (f:fs) nums m = do let char = checkChar $ f
                              x    = fst a
                              y    = snd a
                              pixs = toPixel x
-                             --pixs = Pixels {color = G.White, dots = pix}
                              nmap = M.insert char pixs m
                          checkR x
                          checkC x $ head nums

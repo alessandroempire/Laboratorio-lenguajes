@@ -43,7 +43,7 @@ data Effects = Say String
              | Color G.Color
              | Repeat Integer [Effects]
              | Forever [Effects]
-     deriving (Show, Read) 
+     deriving (Show, Read, Eq) 
 
 -- | Función que convierte una palabra a un Pixel de color White.
 stringToPixel :: String -> M.Map Char Pixels -> Pixels

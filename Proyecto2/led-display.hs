@@ -13,7 +13,7 @@ import qualified System.Directory as SD
 import qualified System.IO as SI 
 import qualified Data.Map as M
 import qualified Graphics.HGL as G
-import Control.Concurrent (threadDelay)
+import Control.Concurrent
 import Data.List (intercalate)
 import Data.Maybe (isNothing)
 import Pixels
@@ -32,11 +32,17 @@ processFont (fn:fns) = do fileExists <- SD.doesFileExist fn
                                      putStrLn $ "Procesando " ++ fn
                                      m <- readFont fd
                                      SI.hClose fd
+                                     print fns
+                                     checkEffects fns
                                      e <- processEffects fns []
                                      --print m
                                      --print e
                                      ledDisplay m e
                              else    error $ "El nombre del archivo " ++ fn ++ " no existe."
+
+--checkEffects ::
+checkEffects [] = error "Error: Se debe suministrar al menos un archivo de efectos." 
+checkEffects fns = return ()
 
 processEffects :: [FilePath] -> [[Effects]] -> IO [Effects]
 processEffects []       acc = do putStrLn "Se procesaron todos los efectos correctamente."
@@ -47,13 +53,33 @@ processEffects (fn:fns) acc = do fileExists <- SD.doesFileExist fn
                                      then do fd <- SI.openFile fn SI.ReadMode
                                              putStrLn $ "Procesando " ++ fn
                                              e <- readDisplayInfo fd
+                                             --readDisplayInfo fd --borrar
                                              let newacc =  e : acc
                                              SI.hClose fd
                                              processEffects fns newacc
+                                             --processEffects [] acc--borrar
                                      else error $ "El nombre del archivo " ++ fn ++ " no existe."
 
 -- | Función que lee cada efecto en un archivo y los retorna en un arreglo. 
 --readDisplayInfo :: SI.Handle -> IO [Effects]
+{-
+readDisplayInfo h = do s <- SI.hGetContents h
+                       print s
+                       let a = readEffects s
+                       print "el a"
+                       --print a
+                       print "?"
+
+readEffects :: String -> Effects
+readEffects s = case filter (null . snd) (reads s) of
+                  [(a, _)] -> a
+                  x        -> error "Error: invalida sintaxis en archivo de efectos."
+
+--isSpace
+isSpace char = if char == ' ' then True
+                              else False
+-}
+
 readDisplayInfo h = do s <- SI.hGetContents h
                        let a = lines s
                            b = checkf a
@@ -74,25 +100,55 @@ checkf (a:as) = do if largo == 0
 ledDisplay :: M.Map Char Pixels -> [Effects] -> IO ()
 ledDisplay m []     = print "se acabo"
 ledDisplay m es = do G.runGraphics $ do
-                            w <- G.openWindow "Pixels" (800,600)
+                            let t = getsize es
+                                d = getWsize m t
+                            putStrLn $ "el d es "
+                            print d
+                            print t
+                            --w <- G.openWindow "Pixels" (500,500)
+                            w <- G.openWindow "Pixels" d
                             --poner tamano segun mensaje mas largo
                             G.clearWindow w                            
-                            applyEffect es m w defaultP 
-                            G.getKey w
-                            G.closeWindow w
+                            --antes de llamar a apply montar thread
+                            --createThread w
+                            thread <- forkIO $ do 
+                                                  applyEffect es m w defaultP
+                                                  G.getKey w
+                                                  G.closeWindow w
+                            endless w thread                     
 
 
-                            --if G.isEscapeKey key
-                              --  then do putStrLn "Hasta Luego."
-                                --        return ()
-                                --else do Nothing
-                            --ledDisplay m es
--- \ESC es la tecla escape
+endless :: G.Window -> ThreadId -> IO ()
+endless w thread = do 
+                      key <- G.getKey w 
+                      if G.isEscapeKey key
+                          then do putStrLn "Se presiono tecla ESC, hasta Luego!"
+                                  killThread thread
+                                  G.closeWindow w
+                                  return ()
+                          else endless w thread
+
+
+getsize :: [Effects] -> Int
+getsize eff = foldl gsize 0 eff
+    where gsize acc (Say a) = if largo > acc
+                                 then largo
+                                 else acc
+                              where largo = length a
+          gsize acc  _      = acc
+
+getWsize :: M.Map Char Pixels -> Int -> (Int, Int)
+getWsize m n = ( (n * column * 3) + n*(column + column) + n*5 , 
+                ( row * 3 + row + 1) + 5   )
+    where pix    = dots $ m M.! '\a'
+          row    = length pix
+          column = length $ head pix
   
---Valor inicial de la posición del Pixel en la pantalla
-ini = ((5,5), (8,8))
+--Valor inicial de la posición del Pixel en la pantalla.
+ini = ((0,0), (3,3))
   
- --applyEffects ::
+-- Función que determina cual efecto se debe aplicar. 
+applyEffect :: [Effects] -> M.Map Char Pixels -> G.Window -> Pixels -> IO Pixels
 applyEffect [] _ w p                  = return(p)
 
 applyEffect ((Say a):es) m w _        = do G.clearWindow w
@@ -160,27 +216,29 @@ applyEffect ((Forever xs):es) m w p    = do
 
 type Position = ((Int, Int), (Int,Int))
 
---esfera :: 
+esfera :: G.Point -> G.Point -> [G.Graphic]
 esfera a b = [G.ellipse a b]
 
---drawC ::
+drawC :: G.Window -> [[Pixel]] -> Position -> G.Color -> IO ()
 drawC w []     pos               color = return ()
 drawC w (p:ps) ((x1,y1),(x2,y2)) color = do let pos  = ((x1,y1+1), (x2,y2+1))
                                                 y    = snd $ snd pos
-                                                npos = ((x1,y+4), (x2,y+7)) 
+                                                npos = ((x1,y+1), (x2,y+4))
                                             newx <- drawR w p pos color
                                             drawC w ps npos color
 
---drawI :: G.Window -> [Bool] -> Position -> IO ()
+drawR :: G.Window -> [Pixel] -> Position -> G.Color -> IO (Position)
 drawR w []      pos              color = do return (pos)
 drawR w (p:ps) ((x1,y1),(x2,y2)) color = do let pos  = ((x1+1, y1), (x2+1, y2))
-                                                npos = ((x1+4, y1), (x2+4, y2))
+                                                x    = fst $ snd pos
+                                                npos = ((x+1, y1), (x+4, y2))
+                                            print pos
+                                            print npos
                                             if (on p) 
                                                 then do drawing w pos color
                                                         drawR w ps npos color
                                                 else do drawing w pos G.Black
                                                         drawR w ps npos color
 
-
---drawing ::
+drawing :: G.Window -> (G.Point, G.Point) -> G.Color -> IO ()
 drawing w (pos1, pos2) color = G.drawInWindow w $ G.withColor color $ G.overGraphics $ esfera (pos1) (pos2)                                         

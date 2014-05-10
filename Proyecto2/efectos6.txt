@@ -1,3 +1,2 @@
-Say "HOLAX"
-Delay 3000
-Say "X"
+Say "HOLA MAMI FELIZ DIA"
+Repeat 100000 [Left, Down, Backwards, UpsideDown, Color Red]

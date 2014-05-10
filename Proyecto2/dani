@@ -1,0 +1,4 @@
+readEffects ::  String -> Effects
+readEffects s = case filter (null . dropWhile isSpace . snd) (reads s) of
+   [(x, _)] -> x
+   y         -> error "No pude parsear el archivo de efectos."
