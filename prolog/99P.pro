@@ -57,6 +57,11 @@ dupli([X|Xs], [X,X|Ys]) :- dupli(Xs,Ys).
 
 %p15
 %muy peludo
+% my_dupli(L,K,L1)
+
+%my_dupli(E,1,[E]).
+%my_dupli(E,K,L) :- K > 1, N is K - 1, my_dupli(E,N,[E|L]).
+%my_dupli([X|Xs],K,[D|Zs] :- my_dupli(Xs,K,Zs), 
 
 %p17
 %split(L,K,L1,L2) :- los primeros k esta en L1, y el resto en L2
@@ -81,3 +86,6 @@ insert_at(E, [X|Xs], K, [X|Zs]) :- N is K - 1, insert_at(E,Xs, N, Zs).
 
 %p22
 %range(X, Y, L) :- 
+
+range(N1, N1, [N1]).
+range(N1, N2, [N1|Zs]) :- K is N1 + 1, range(K, N2, Zs).
