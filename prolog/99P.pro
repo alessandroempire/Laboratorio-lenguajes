@@ -46,8 +46,18 @@ compress([X,X|Xs],Zs) :- compress([X|Xs],Zs).
 compress([X,Y|Ys],[X|Zs]) :- Y \= X, compress([Y|Ys], Zs).
 
 %p09
-%pack(L,X)
-% no se
+%pack(L,X) :- pone en un arreglo elementos repetido
+% 
+
+pack([],[]).
+pack([X|Xs], [Z|Zs]) :- transfer(X,Xs,Ys,Z), pack(Ys,Zs).
+
+% transfer tiene en Ys la lista que queda al quitar todos los repetidos
+% y haberlos colocado en Z
+
+transfer(X, [], [], [X]).
+transfer(X, [Y|Ys], [Y|Ys], [X]) :- X \= Y.
+transfer(X, [X|Xs], Ys, [X|Zs]) :- transfer(X, Xs, Ys, Zs).
 
 %p14
 %dupli(L,X) :- duplicar los elementos de una lista
