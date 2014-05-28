@@ -19,6 +19,8 @@
 % idiotsort(Lista, Ordenada) :-
 %   triunfa si Ordenada tiene los mismo elementos de Lista pero
 %   ordenados según su valor ascendente. 
+%   Se usa un cut verde: existe una sola forma de ordenar ascendentemente
+%   una lista. 
 %
 % Para su funcionamineto es necesario
 %   - permute/2 
@@ -27,6 +29,7 @@
 %   - verificador/1 
 %     verificador(?L). 
 %     Triunfa si L los elementos estan ordenados según su valor ascendente. 
+
 
 idiotsort([X], [X]) :- !.
 idiotsort(L, L1) :-
