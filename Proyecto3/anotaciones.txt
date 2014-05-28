@@ -1,0 +1,7 @@
+
+Tag	Meaning
++	 argument is expected to be instantiated (i.e. have a value rather than be a variable) when the procedure is called as a goal.
+
+–	 argument is expected to be a variable to be bound when the procedure is called as a goal.
+
+?	 argument may be either instantiated, or be an unbound variable, when the procedure is called as a goal.
