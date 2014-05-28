@@ -19,17 +19,16 @@
 idiotsort([X], [X]) :- !.
 idiotsort(L, L1) :-
     var(L),
-    permute(L1, Z),
-    member(L, Z).
+    permute(L1, L).
 idiotsort(L, L1) :-
     var(L1), 
-    permute1(L, Z),
-    member(L1, Z),
-    verificador(L1).
-
-permute([X|Xs], L1):-
-    findall(E, permutation([X|Xs], E), L1),
+    permute(L, L1),
+    verificador(L1),
     !.
+
+permute([X|Xs], E):-
+    findall(E, permutation([X|Xs], E), L1),
+    member(E, L1).
 
 verificador([_]).
 verificador([X,Y|Zs]) :- 
