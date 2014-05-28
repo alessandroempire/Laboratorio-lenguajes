@@ -10,38 +10,39 @@
 
 % 1.- Idiot Sort
 
-%idiotsort([],[]) :- !.
-idiotsort(L,L1)  :- 
-    permutation(L,L1);
-    verificador(L1);
+% Implementacion del idiotsort
+%
+% idiotsort/2
+%
+% idiotsort(?Lista, ?Ordenada).
+%
+% idiotsort(Lista, Ordenada) :-
+%   triunfa si Ordenada tiene los mismo elementos de Lista pero
+%   ordenados según su valor ascendente. 
+%
+% Para su funcionamineto es necesario
+%   - permute/2 
+%     permute(?L, ?L1).
+%     Triunfa sí L1 es una permutación de elemento de L y viceversa. 
+%   - verificador/1 
+%     verificador(?L). 
+%     Triunfa si L los elementos estan ordenados según su valor ascendente. 
+
+idiotsort([X], [X]) :- !.
+idiotsort(L, L1) :-
+    var(L),
+    permute(L1, L).
+idiotsort(L, L1) :-
+    var(L1), 
+    permute(L, L1),
+    verificador(L1),
     !.
 
-generador([X],[X]).
-generador([X|Xs], [E|Zs]):-
-    member(E,[X|Xs]),
-    generador(Xs, Zs).
+permute([X|Xs], E):-
+    findall(E, permutation([X|Xs], E), L1),
+    member(E, L1).
 
-verificador([]).
 verificador([_]).
 verificador([X,Y|Zs]) :- 
     X =< Y,
     verificador([Y|Zs]).
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-% 2.- Cuadrados magicos pandiagonales
-
-
-
-
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-% 3.- Un Agente De Viajes
-
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-% 4.- Fracciones periodicas
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
