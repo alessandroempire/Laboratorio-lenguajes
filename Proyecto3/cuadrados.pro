@@ -127,4 +127,3 @@ stopwatch(Predicate) :-
         Elapsed is (Finish - Start) / 1000,
         format('~4f seg~N',[Elapsed]), !.
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
