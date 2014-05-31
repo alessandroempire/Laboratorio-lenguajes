@@ -1,0 +1,21 @@
+en la 3.2
+
+check_day(todos, todos).
+check_day(todos, habiles).
+check_day(todos, lun).
+check_day(todos, mar).
+check_day(todos, mie).
+check_day(todos, jue).
+check_day(todos, vie).
+check_day(todos, sab).
+check_day(todos, dom).
+check_day(habiles, habiles).
+check_day(habiles, lun).
+check_day(habiles, mar).
+check_day(habiles, mie).
+check_day(habiles, jue).
+check_day(habiles, vie).
+check_day(Xs, Day) :-
+    member(E, Xs), 
+    E == Day, 
+    !.
