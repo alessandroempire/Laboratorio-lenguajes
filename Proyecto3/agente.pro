@@ -97,11 +97,68 @@ horario( new_york, boston,
 % check_day triunfa sí Day es subconjunto de dias. 
 % check_day( -dias, -Day)
 
-ruta(Origen, Destino, Dia, Ruta) :-
+
+ruta(Origen, Destino, Dia, Flight) :-
     horario(Origen, Destino, Vuelos),
-    find_flight(Vuelos ,Dia, Flight),
-    Ruta = Flight,
+    find_flight(Vuelos, Dia, Flight),
     !.
+ruta(Origen, Destino, Dia, Ruta) :-
+    findall(I, horario(Origen, I, _), Zs), 
+    member(Intermedio, Zs),
+    horario(Origen, Intermedio, Vuelos),
+    find_flight(Vuelos, Dia, Flight),
+    check_times(Intermedio, Flight),
+    % ruta(Intermedio, Destino, Dia, Ruta),
+    !. 
+    %intermedio es un arreglo....
+
+
+check_times([]).
+check_times(Intermedio, [X|Xs]) :-
+    check_tiempos(Intermedio, X),
+    check_times(Intermedio, Xs).
+
+check_tiempos(Intermedio, A:B / C:D / _ / _ ) :-
+    member(Intermedio, [new_york, chicago, los_angeles]),
+    suma(1:30, A:B, X:Y),
+    my_compare(X:Y, C:D).
+check_tiempos(Intermedio, A:B / C:D / _ / _ ) :-
+    member(Intermedio, [san_francisco, dallas, miami]),
+    suma(1:00, A:B, X:Y),
+    my_compare(X:Y, C:D).
+check_tiempos(Intermedio, a:b / c:d / _ / _ ) :-
+    suma(0:40, A:B, X:Y),
+    my_compare(X:Y, C:D).
+     
+suma(A:B, C:D, X:Y) :-
+    N1 is B + D,
+    N2 is A + C,
+    fix_time(N2:N1, X:Y),
+    !.
+
+fix_time(A:B, X:D) :-
+    B >= 60,
+    D is B-60,
+    C is A + 1,
+    C >= 24,
+    X is C - 24.
+
+fix_time(A:B, C:D) :-
+    B >= 60,
+    D is B-60,
+    C is A + 1.
+
+fix_time(A:B, C:B) :-
+    A >= 24,
+    C is A - 24.
+
+fix_time(A:B, A:B).
+
+my_compare(A:B, C:D) :-
+    A =< C,
+    B =< D.
+
+
 
 find_flight(Xs, Day, Z):-
     findall(E, member(E, Xs), Z),
