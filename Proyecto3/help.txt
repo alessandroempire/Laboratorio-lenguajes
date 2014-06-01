@@ -81,3 +81,9 @@ ruta:
 
 consult('agente.pro').
 ruta(dallas, seattle,  mar, X).
+
+check_times([
+8:0/9:50/zz8291/todos,
+12:10/12:50/zz9301/habiles,
+18:40/19:50/zz9278/[lun,mar,mie,jue,vie]]).
+

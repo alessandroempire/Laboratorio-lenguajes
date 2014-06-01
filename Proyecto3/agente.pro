@@ -97,7 +97,6 @@ horario( new_york, boston,
 % check_day triunfa sí Day es subconjunto de dias. 
 % check_day( -dias, -Day)
 
-
 ruta(Origen, Destino, Dia, Flight) :-
     horario(Origen, Destino, Vuelos),
     find_flight(Vuelos, Dia, Flight),
@@ -108,17 +107,20 @@ ruta(Origen, Destino, Dia, Ruta) :-
     horario(Origen, Intermedio, Vuelos),
     find_flight(Vuelos, Dia, Flight),
     check_times(Intermedio, Flight),
-    % ruta(Intermedio, Destino, Dia, Ruta),
+    ruta(Intermedio, Destino, Dia, Ruta),
     !. 
-    %intermedio es un arreglo....
+%    intermedio es un arreglo....
 
 
-check_times([]).
-check_times(Intermedio, [X|Xs]) :-
-    check_tiempos(Intermedio, X),
-    check_times(Intermedio, Xs).
+% Necesito un precidado que triunfe cuando dado una lista de vuelos
+% y un aeropuerto intermedio, los tiempos de llegada y salida sean
+% mayor a un threshold indicado. 
 
-check_tiempos(Intermedio, A:B / C:D / _ / _ ) :-
+check_times(Intermedio, Xs, Z) :-
+    findall(X, (member(X, Xs), check_tiempos(Intermedio, X)), Z),
+    !.
+
+check_tiempos(Intermedio, A:B / C:D / _ / _) :-
     member(Intermedio, [new_york, chicago, los_angeles]),
     suma(1:30, A:B, X:Y),
     my_compare(X:Y, C:D).
@@ -126,7 +128,8 @@ check_tiempos(Intermedio, A:B / C:D / _ / _ ) :-
     member(Intermedio, [san_francisco, dallas, miami]),
     suma(1:00, A:B, X:Y),
     my_compare(X:Y, C:D).
-check_tiempos(Intermedio, a:b / c:d / _ / _ ) :-
+check_tiempos(Intermedio, A:B / C:D / _ / _ ) :-
+    \+ member(Intermedio, [new_york, chicago, los_angeles, san_francisco, dallas, miami]),
     suma(0:40, A:B, X:Y),
     my_compare(X:Y, C:D).
      

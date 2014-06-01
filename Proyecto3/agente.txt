@@ -19,3 +19,15 @@ check_day(Xs, Day) :-
     member(E, Xs), 
     E == Day, 
     !.
+
+
+
+ruta(dallas, chicago, lun, X).
+X = [
+8:0/9:50/zz8291/todos, 12:10/12:50/zz9301/habiles, 18:40/19:50/zz9278/[lun,mar,mie,jue,vie] ]
+
+dallas -> san franciso -> seattle
+1)  13:30 / 14:40 / nw323 / [mar,jue] 
+
+2) 11:10 / 12:20 / sw211 / [lun,mar,mie,vie,dom],
+   20:30 / 21:30 / nw472 / [lun,mie,jue,sab] 
