@@ -101,11 +101,23 @@ ruta(Origen, Destino, Dia, Flight) :-
     horario(Origen, Destino, Vuelos),
     find_flight(Vuelos, Dia, Flight),
     !.
+ruta(Origen, Destino, Dia, All_flights) :-
+    \+ horario(Origen, Destino, _),
+    findall(I, horario(Origen, I, _), Cs), 
+    findall(V, (horario(Origen, Inter, V), member(Inter, Cs)), All_flights).
+    %findall(F, (find_flight(E, Dia, F), member(E, All_flights)), All_f).
+
+
+%ver setof
+%    find_flight(Vuelos, Dia, Flight),
+%    check_times(Intermedio, Flight, Z?),
+%    ruta(Intermedio, Destino, Dia, Ruta),
+%    intermedio es un arreglo....
+
 
 find_flight(Xs, Day, Z):-
     findall(E, (member(E, Xs), check_flight(E, Day)), Z).
 
-%%%%check_flight( _ / _ / _ / Xs, Xs).
 check_flight(_ / _ / _ / Xs, Day) :-
     check_day(Xs, Day).
 
@@ -118,3 +130,51 @@ check_day(Xs, Day) :-
 
 
 
+% Necesito un precidado que triunfe cuando dado una lista de vuelos
+% y un aeropuerto intermedio, los tiempos de llegada y salida sean
+% mayor a un threshold indicado. 
+
+check_times(Intermedio, Xs, Z) :-
+    findall(X, (member(X, Xs), check_tiempos(Intermedio, X)), Z),
+    !.
+
+check_tiempos(Intermedio, A:B / C:D / _ / _) :-
+    member(Intermedio, [new_york, chicago, los_angeles]),
+    suma(1:30, A:B, X:Y),
+    my_compare(X:Y, C:D).
+check_tiempos(Intermedio, A:B / C:D / _ / _ ) :-
+    member(Intermedio, [san_francisco, dallas, miami]),
+    suma(1:00, A:B, X:Y),
+    my_compare(X:Y, C:D).
+check_tiempos(Intermedio, A:B / C:D / _ / _ ) :-
+    \+ member(Intermedio, [new_york, chicago, los_angeles, san_francisco, dallas, miami]),
+    suma(0:40, A:B, X:Y),
+    my_compare(X:Y, C:D).
+     
+suma(A:B, C:D, X:Y) :-
+    N1 is B + D,
+    N2 is A + C,
+    fix_time(N2:N1, X:Y),
+    !.
+
+fix_time(A:B, X:D) :-
+    B >= 60,
+    D is B-60,
+    C is A + 1,
+    C >= 24,
+    X is C - 24.
+
+fix_time(A:B, C:D) :-
+    B >= 60,
+    D is B-60,
+    C is A + 1.
+
+fix_time(A:B, C:B) :-
+    A >= 24,
+    C is A - 24.
+
+fix_time(A:B, A:B).
+
+my_compare(A:B, C:D) :-
+    A =< C,
+    B =< D.
