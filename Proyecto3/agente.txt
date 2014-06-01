@@ -20,7 +20,10 @@ check_day(Xs, Day) :-
     E == Day, 
     !.
 
-
+NEWOP:
+%%%%:- op(300, xfx, newop).
+%%%%%horario( a, b, 9 newop 2 / 3 newop 5 / 3 /  5).
+%%%%%%:(_,_).
 
 ruta(dallas, chicago, lun, X).
 X = [
@@ -31,3 +34,34 @@ dallas -> san franciso -> seattle
 
 2) 11:10 / 12:20 / sw211 / [lun,mar,mie,vie,dom],
    20:30 / 21:30 / nw472 / [lun,mie,jue,sab] 
+
+
+dallas san francisco
+ [ 13:30 / 14:40 / nw323 / [mar,jue] ]
+dallas, chicago,
+           [  8:00 /  9:50 / zz8291 / todos,
+             12:10 / 12:50 / zz9301 / habiles,
+             18:40 / 19:50 / zz9278 / [lun,mar,mie,jue,vie] ] 
+horario( dallas, los_angeles,
+           [ 13:20 / 16:20 / nw212 / [lun,mar,mie,vie,dom],
+             16:30 / 19:30 / aa473 / [lun,mie,jue,sab] ] ). 
+
+me dio:
+[[8:0/9:50/zz8291/todos,
+12:10/12:50/zz9301/habiles,
+18:40/19:50/zz9278/[lun,mar,mie,jue,vie]],
+[13:20/16:20/nw212/[lun,mar,mie,vie,dom],
+16:30/19:30/aa473/[lun,mie,jue,sab]],
+[13:30/14:40/nw323/[mar,jue]]]
+
+
+ruta(Origen, Destino, Dia, Flight) :-
+    findall(I, horario(Origen, I, _), Zs), 
+    member(Intermedio, Zs),
+    horario(Origen, Intermedio, Vuelos),
+    find_flight(Vuelos, Dia, Flight),
+    check_times(Intermedio, Flight),
+%    ruta(Intermedio, Destino, Dia, Ruta),
+    !. 
+%    intermedio es un arreglo....
+

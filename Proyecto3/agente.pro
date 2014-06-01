@@ -1,3 +1,9 @@
+% Agente.pro
+% 
+% Definimos el operador ":" infijo
+
+:- op(300, xfx, :).
+
 % horario/3
 
 horario( new_york, chicago,
@@ -70,12 +76,6 @@ horario( new_york, boston,
            [ 9:00 / 9:40 / zz765 / [lun,mar,mie,jue,vie,sab],
             16:10 / 16:55 / emi666 / [lun,mar,mie,jue,vie,dom] ] ). 
 
-% Agente.pro
-% 
-% Definimos el operador ":" infijo
-
-:- op( 7, xfx, :).
-
 %
 % 3.2 Cálculo de Rutas
 %
@@ -101,80 +101,20 @@ ruta(Origen, Destino, Dia, Flight) :-
     horario(Origen, Destino, Vuelos),
     find_flight(Vuelos, Dia, Flight),
     !.
-ruta(Origen, Destino, Dia, Ruta) :-
-    findall(I, horario(Origen, I, _), Zs), 
-    member(Intermedio, Zs),
-    horario(Origen, Intermedio, Vuelos),
-    find_flight(Vuelos, Dia, Flight),
-    check_times(Intermedio, Flight),
-    ruta(Intermedio, Destino, Dia, Ruta),
-    !. 
-%    intermedio es un arreglo....
-
-
-% Necesito un precidado que triunfe cuando dado una lista de vuelos
-% y un aeropuerto intermedio, los tiempos de llegada y salida sean
-% mayor a un threshold indicado. 
-
-check_times(Intermedio, Xs, Z) :-
-    findall(X, (member(X, Xs), check_tiempos(Intermedio, X)), Z),
-    !.
-
-check_tiempos(Intermedio, A:B / C:D / _ / _) :-
-    member(Intermedio, [new_york, chicago, los_angeles]),
-    suma(1:30, A:B, X:Y),
-    my_compare(X:Y, C:D).
-check_tiempos(Intermedio, A:B / C:D / _ / _ ) :-
-    member(Intermedio, [san_francisco, dallas, miami]),
-    suma(1:00, A:B, X:Y),
-    my_compare(X:Y, C:D).
-check_tiempos(Intermedio, A:B / C:D / _ / _ ) :-
-    \+ member(Intermedio, [new_york, chicago, los_angeles, san_francisco, dallas, miami]),
-    suma(0:40, A:B, X:Y),
-    my_compare(X:Y, C:D).
-     
-suma(A:B, C:D, X:Y) :-
-    N1 is B + D,
-    N2 is A + C,
-    fix_time(N2:N1, X:Y),
-    !.
-
-fix_time(A:B, X:D) :-
-    B >= 60,
-    D is B-60,
-    C is A + 1,
-    C >= 24,
-    X is C - 24.
-
-fix_time(A:B, C:D) :-
-    B >= 60,
-    D is B-60,
-    C is A + 1.
-
-fix_time(A:B, C:B) :-
-    A >= 24,
-    C is A - 24.
-
-fix_time(A:B, A:B).
-
-my_compare(A:B, C:D) :-
-    A =< C,
-    B =< D.
-
-
 
 find_flight(Xs, Day, Z):-
-    findall(E, member(E, Xs), Z),
-    check_flight(E, Day).
+    findall(E, (member(E, Xs), check_flight(E, Day)), Z).
 
+%%%%check_flight( _ / _ / _ / Xs, Xs).
 check_flight(_ / _ / _ / Xs, Day) :-
     check_day(Xs, Day).
 
 check_day(todos, Day) :-
-    member(Day, [lun, mar, mie, jue, vie, sab, dom]).
+    member(Day, [lun, mar, mie, jue, vie, sab, dom]), !.
 check_day(habiles, Day) :-
-    member(Day, [lun, mar, mie, jue, vie]).
+    member(Day, [lun, mar, mie, jue, vie]), !.
 check_day(Xs, Day) :-
-    member(Day, Xs).
+    member(Day, Xs), !.
 
-%%Hallar ruta..
+
+
