@@ -117,58 +117,93 @@ generate([A1,A2,A3,A4,A5,A6,A7,A8,A9,A10,A11,A12,A13,A14,A15,A16]):-
     select(A3,G2,G3),
     select(A4,G3,G4),
     
-    check(A1,A2,A3,A4), % Fila 1
+    % Fila 1
+    check(A1,A2,A3,A4),
     
     select(A5,G4,G5),
     select(A6,G5,G6),
     select(A7,G6,G7),
     select(A8,G7,G8),
 
-    check(A5,A6,A7,A8), % Fila 2
+    % Fila 2
+    check(A5,A6,A7,A8),
     
     select(A9,G8,G9),
 
-    A1 + A5 + A9 < 34,  % Pre-chequeo Columna 1
-    A3 + A8 + A9 < 34,  % Pre-chequeo DiagonalR 3
-    A3 + A6 + A9 < 34,  % Pre-chequeo DiagonalL 4
+    % Pre-chequeo Columna 1
+    A1 + A5 + A9 < 34, 
+    % Pre-chequeo DiagonalR 3
+    A3 + A8 + A9 < 34,
+    % Pre-chequeo DiagonalL 4
+    A3 + A6 + A9 < 34,
+    
     select(A10,G9,G10),
-    A2 + A6 + A10 < 34, % Pre-chequeo Columna 2
-    A5 + A4 + A10 < 34, % Pre-chequeo DiagonalR 2
-    A4 + A7 + A10 < 34, % Pre-chequeo DiagonalL 1
+    
+    % Pre-chequeo Columna 2
+    A2 + A6 + A10 < 34,
+    % Pre-chequeo DiagonalR 2
+    A5 + A4 + A10 < 34,
+    % Pre-chequeo DiagonalL 1
+    A4 + A7 + A10 < 34,
+    
     select(A11,G10,G11),
-    A3 + A7 + A11 < 34, % Pre-chequeo Columna 3
-    A1 + A6 + A11 < 34, % Pre-chequeo DiagonalR 1
-    A1 + A8 + A11 < 34, % Pre-chequeo DiagonalL 2
+    
+    % Pre-chequeo Columna 3
+    A3 + A7 + A11 < 34,
+    % Pre-chequeo DiagonalR 1
+    A1 + A6 + A11 < 34,
+    % Pre-chequeo DiagonalL 2
+    A1 + A8 + A11 < 34,
+    
     select(A12,G11,G12),
-    A4 + A8 + A12 < 34, % Pre-chequeo Columna 4
-    A2 + A7 + A12 < 34, % Pre-chequeo DiagonalR 4
-    A2 + A5 + A12 < 34, % Pre-chequeo DiagonalL 3
-    check(A9,A10,A11,A12), % Fila 3
+
+    % Pre-chequeo Columna 4
+    A4 + A8 + A12 < 34,
+    % Pre-chequeo DiagonalR 4
+    A2 + A7 + A12 < 34,
+    % Pre-chequeo DiagonalL 3
+    A2 + A5 + A12 < 34,
+    
+    % Fila 3
+    check(A9,A10,A11,A12),
     
     select(A13,G12,G13),
     
-    check(A1,A5,A9,A13),    % Columna 1
-    check(A2,A7,A12,A13),   % DiagonalR 4
-    check(A4,A7,A10,A13),   % DiagonalL 1   
+    % Columna 1
+    check(A1,A5,A9,A13), 
+    % DiagonalR 4   
+    check(A2,A7,A12,A13),
+    % DiagonalL 1
+    check(A4,A7,A10,A13),   
     
     select(A14,G13,G14),
     
-    check(A2,A6,A10,A14),   % Columna 2
-    check(A3,A8,A9,A14),    % DiagonalR 3
-    check(A1,A8,A11,A14),   % DiagonalL 2
+    % Columna 2
+    check(A2,A6,A10,A14),
+    % DiagonalR 3
+    check(A3,A8,A9,A14),
+    % DiagonalL 2
+    check(A1,A8,A11,A14),
     
     select(A15,G14,G15),
     
-    check(A3,A7,A11,A15),   % Columna 3
-    check(A4,A5,A10,A15),   % DiagonalR 2
-    check(A2,A5,A12,A15),   % DiagonalL 3
+    % Columna 3
+    check(A3,A7,A11,A15),
+    % DiagonalR 2
+    check(A4,A5,A10,A15),
+    % DiagonalL 3
+    check(A2,A5,A12,A15),
     
     select(A16,G15,_),
     
-    check(A4,A8,A12,A16),   % Columna 4
-    check(A1,A6,A11,A16),   % DiagonalR 1
-    check(A3,A6,A9,A16),    % DiagonalL 4
-    check(A13,A14,A15,A16). % Fila 4
+    % Columna 4
+    check(A4,A8,A12,A16),
+    % DiagonalR 1
+    check(A1,A6,A11,A16),
+    % DiagonalL 4
+    check(A3,A6,A9,A16),
+    % Fila 4 
+    check(A13,A14,A15,A16).
 
 stopwatch(Predicate) :-
         real_time(Start),
