@@ -27,7 +27,14 @@
 
 %% - checkValues(?Evil)/1
 %%   checkValues(Evil):-
-%%   Triunfa si todos los elementos de la matriz estan entre 1 y 16.
+%%   Triunfa si todos los elementos de la matriz estan entre 1 y 16, y se 
+%%   repiten solo una vez.
+
+%% - numOfTimes(?A,?B,?C)/3
+%%   numOfTimes(A,B,C) :-
+%%   Triunfa si el elemento 'A' se repite en la lista 'B', 'C' veces. Si solo se
+%%   le dan los valores A y B, te devuelve el numero de veces que A aparece en 
+%%   la lista.
 
 %% - checkColumns(?Evil)/1
 %%   checkColumns(Evil):-
@@ -51,7 +58,7 @@
     
 %% - generate(?Evil)/1
 %%   generate(Evil) :-
-%%   Este procedimiento devuelve todos los cuadrados magicos pandiagonales 
+%%   Este predicado devuelve todos los cuadrados magicos pandiagonales 
 %%   posibles. Es importante destacar, que para mejorar su eficiencia, la 
 %%   verificacion de la matriz se va haciendo a medida que la matriz se va 
 %%   generando, de tal forma de descartar lo mas rapido posible, aquellas 
@@ -79,8 +86,17 @@ check(A,B,C,D) :-
 
 checkValues([]).
 checkValues([X|Xs]) :-
+    numOfTimes(X,[X|Xs],N),
+    N = 1,
     X >= 1, X =< 16,
     checkValues(Xs).
+
+numOfTimes(_,[],0). 
+numOfTimes(X,[X|R],Num):- 
+    numOfTimes(X,R,Num1), 
+    Num is Num1+1,!. 
+numOfTimes(X,[_|R],Num):- 
+    numOfTimes(X,R,Num).
 
 
 checkColumns([A1,A2,A3,A4,A5,A6,A7,A8,A9,A10,A11,A12,A13,A14,A15,A16]):- 
@@ -212,3 +228,4 @@ stopwatch(Predicate) :-
         Elapsed is (Finish - Start) / 1000,
         format('~4f seg~N',[Elapsed]), !.
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
