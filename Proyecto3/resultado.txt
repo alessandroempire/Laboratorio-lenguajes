@@ -226,6 +226,11 @@ segundo arreglo
 ]
 ]
 
+[
+[chicago,dallas,los_angeles,san_francisco],
+[chicago,dallas,san_francisco]
+]
+
 ---------------------------------------------------------------------
 [
 [
