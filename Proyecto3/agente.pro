@@ -1,3 +1,4 @@
+
 % Agente.pro
 % 
 % Definimos el operador ":" infijo
@@ -101,18 +102,50 @@ ruta(Origen, Destino, Dia, Flight) :-
     horario(Origen, Destino, Vuelos),
     find_flight(Vuelos, Dia, Flight),
     !.
-ruta(Origen, Destino, Dia, All_flights) :-
+ruta(Origen, Destino, Dia, Flights) :-
     \+ horario(Origen, Destino, _),
-    findall(I, horario(Origen, I, _), Cs), 
-    findall(V, (horario(Origen, Inter, V), member(Inter, Cs)), All_flights).
-    %findall(F, (find_flight(E, Dia, F), member(E, All_flights)), All_f).
+    findall(X, camino(Origen, Destino, [], X), Paths),
+    map_flights(Paths, Dia, Flights),
+    !.
 
 
-%ver setof
-%    find_flight(Vuelos, Dia, Flight),
-%    check_times(Intermedio, Flight, Z?),
-%    ruta(Intermedio, Destino, Dia, Ruta),
-%    intermedio es un arreglo....
+check_empty(Xs, Z) :-
+    member(E, Xs),
+    check_vacio(E),
+    Z = [[]].
+check_empty(Xs, Xs).
+
+check_vacio([]).
+
+
+map_flights([X], Day, [V]) :-
+    map_vuelos(X, Day, Z),
+    check_empty(Z, V).
+map_flights([X|Xs], Day, [V|Zs]) :- 
+    map_vuelos(X, Day, Z),
+    check_empty(Z, V),
+    map_flights(Xs, Day, Zs).
+
+map_vuelos([Origen, Destino], Day, [Flight]) :-
+    ruta(Origen, Destino, Day, Flight).
+map_vuelos([Origen, Destino | Xs], Day, [Flight_V | Zs]) :-
+    ruta(Origen, Destino, Day, Flight),
+    check_times( Destino, Flight, Flight_V),
+    map_vuelos([Destino | Xs], Day, Zs).
+
+
+%Acc se debe comenzar con []    
+%camino (Origen, Destino, [], X).
+%findall(X, camino(dallas, seattle, [], X), Z).
+
+camino(Origen, Origen, Acc, Zs) :-
+    append(Acc, [Origen], Zs).
+camino(Origen, Destino, Acc, V) :-
+    findall(X, horario(Origen, X, _), Inter),
+    append(Acc, [Origen], NewAcc),
+    member(I, Inter),
+    \+ member(I, NewAcc),
+    camino(I, Destino, NewAcc, V).
 
 
 find_flight(Xs, Day, Z):-
@@ -130,7 +163,7 @@ check_day(Xs, Day) :-
 
 
 
-% Necesito un precidado que triunfe cuando dado una lista de vuelos
+% Necesito un predicado que triunfe cuando dado una lista de vuelos
 % y un aeropuerto intermedio, los tiempos de llegada y salida sean
 % mayor a un threshold indicado. 
 
@@ -175,6 +208,183 @@ fix_time(A:B, C:B) :-
 
 fix_time(A:B, A:B).
 
+%esta mal
+my_compare(A:_, C:_) :-
+    A < C.
 my_compare(A:B, C:D) :-
-    A =< C,
+    A == C,
     B =< D.
+
+
+
+
+
+%
+% Interfaz del programa
+%
+
+ui :- write('Bienvenido ala agencia de viajes.'), nl, 
+      write('1) Mostrar vuelos entre Ciudad1 y Cuidad2.'), nl, 
+      write('2) Mostrar días que se puede volar entre Ciudad1 y Cuidad2.'), nl,
+      write('3) Mostrar días para viajar directo de Ciudad1 a Ciudad2.'),nl,
+      write('4) Mostrar Gira entre Ciudad1 a Ciudad2 con parada de N días.'),nl,
+      write('5) Mostrar como hacer viaje de ida y vuelta entre Ciudad1 y Ciudad2 con posibliemente con paradas de N días.'),nl,
+      write('6) Salir'),nl,
+      read(X), 
+      procesar(X).
+
+procesar(1) :-
+    write('Introduzca Ciudad1: '), nl,
+    read(C1),
+    write('Introduzca Ciudad2: '), nl,
+    read(C2),
+    ruta(C1, C2, _ , Opciones),
+    write('Los posibles vuelos son : '), nl, 
+    write('Para viajar de '),
+    write(C1),
+    write(' a '),
+    write(C2), nl,
+    printer1(Opciones, C1, C2),
+    ui.
+
+procesar(2) :-
+    write('Introduzca Ciudad1: '), nl,
+    read(C1),
+    write('Introduzca Ciudad2: '), nl,
+    read(C2),
+    ruta(C1, C2, _ , Opciones),
+    write('Los posibles días : '), nl, 
+    write('Para viajar de '),
+    write(C1),
+    write(' a '),
+    write(C2), nl,
+    printer2(Opciones, C1, C2),
+    ui.
+
+procesar(3) :-
+    write('Introduzca Ciudad1: '), nl,
+    read(C1),
+    write('Introduzca Ciudad2: '), nl,
+    read(C2),
+    ruta(C1, C2, _ , Opciones),
+    write('Los posibles días : '), nl, 
+    write('Para viajar de '),
+    write(C1),
+    write(' a '),
+    write(C2), nl,
+    printer3(Opciones, C1, C2),
+    ui.
+
+
+procesar(4) :-
+    write('Opcione no disponible.'), nl.
+
+procesar(5) :-
+    write('Opcione no disponible.'), nl.
+
+procesar(6) :-
+    write('Hasta Luego'), nl.
+
+
+printer1(Opciones, C1, C2) :-
+    horario(C1, C2, _),
+    print_Opciones_simples(Opciones),
+    !.
+printer1(Opciones, C1, C2) :-
+    \+ horario(C1, C2, _),
+    findall(X, camino(C1, C2, [], X), Path),
+    ordenar(Path, Caminos),
+    ordenar(Opciones, Options),
+    print_Opciones_c(Options, Caminos).    
+
+print_Opciones_c([], _).
+print_Opciones_c([X|Xs], [P|Ps]):-
+    write('Posible Vuelo :'), nl,
+    print2(X, P),
+    print_Opciones_c(Xs, Ps).
+
+print2([], _).
+print2([X|Xs], [A, B | Zs]) :-
+    write('vuelo de '),
+    write(A),
+    write(' a '),
+    write(B), nl, 
+    print_Opciones_simples(X),
+    print2(Xs, [B | Zs]).
+
+print_Opciones_simples([]) :-
+    nl.
+print_Opciones_simples([X|Xs]) :-
+    write(X), nl,
+    print_Opciones_simples(Xs).
+ 
+%
+% Los predicados para opcion2.
+%
+
+printer2(Opciones, C1, C2) :-
+    horario(C1, C2, _),
+    print_Opciones_simples2(Opciones),
+    !.
+printer2(Opciones, C1, C2) :-
+    \+ horario(C1, C2, _),
+    findall(X, camino(C1, C2, [], X), Path),
+    ordenar(Path, Caminos),
+    ordenar(Opciones, Options),
+    print_Opciones_c2(Options, Caminos).    
+
+print_Opciones_c2([], _).
+print_Opciones_c2([X|Xs], [P|Ps]):-
+    write('Posible Vuelo :'), nl,
+    print22(X, P),
+    print_Opciones_c2(Xs, Ps).
+
+print22([], _).
+print22([X|Xs], [A, B | Zs]) :-
+    write('vuelo de '),
+    write(A),
+    write(' a '),
+    write(B), nl, 
+    print_Opciones_simples2(X),
+    print22(Xs, [B | Zs]).
+
+print_Opciones_simples2([]) :-
+    nl.
+print_Opciones_simples2([X|Xs]) :-
+    print_solo_dias(X),
+    print_Opciones_simples2(Xs).
+ 
+print_solo_dias(_ / _ / _ / Xs):-
+    write(Xs), 
+    nl.
+
+%
+% Los predicados para opcion 3
+%
+
+printer3(Opciones, C1, C2) :-
+    horario(C1, C2, _),
+    print_Opciones_simples2(Opciones),
+    !.
+printer3(Opciones, C1, C2) :-
+    \+ horario(C1, C2, _),
+    write('No hay dias con vuelos directos entre '),
+    write(C1),
+    write(' y '),
+    write(C2),
+    nl.  
+
+
+% Ordenar 
+%
+ordenar(Xs, L) :-
+    permutation(Xs, L),
+    test_length(L),
+    !. 
+
+test_length([_]).
+test_length([X,Y | Zs]) :-
+    length(X, A),
+    length(Y, B),
+    A =< B,
+    test_length([Y | Zs]).

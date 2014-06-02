@@ -65,3 +65,23 @@ ruta(Origen, Destino, Dia, Flight) :-
     !. 
 %    intermedio es un arreglo....
 
+
+
+
+
+
+
+
+
+-------------------------------
+map_check_flight(Xs, L) :- 
+    findall(E, (map_check_vuelos(E), member(E, Xs)), L).
+
+map_check_vuelos([X | Xs]) :-
+    findall(E, (map_empty_check(E), member(E,Xs)), L).
+    
+map_empty_check([X|Xs]) :-
+    findall(E, check_times(ciudad?, [X|Xs], R). 
+
+
+

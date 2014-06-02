@@ -49,7 +49,7 @@ horario( san_francisco, los_angeles,
              12:45 / 13:35 / sw623 / todos ] ). 
 
 horario( san_francisco, seattle,
-           [ 11:10 / 12:20 / sw211 / [lun,mar,mie,vie,dom],
+           [ 11:10 / 11:20 / sw211 / [lun,mar,mie,vie,dom],
              20:30 / 21:30 / nw472 / [lun,mie,jue,sab] ] ). 
 
 horario( seattle, san_francisco,

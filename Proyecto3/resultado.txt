@@ -1,0 +1,241 @@
+
+
+yes
+{trace}
+| ?- camino(dallas, san_francisco, [], X).
+      1    1  Call: camino(dallas,san_francisco,[],_16) ? 
+      2    2  Call: findall(_51,horario(dallas,_51,_52),_92) ? 
+      3    3  Call: horario(dallas,_51,_52) ? 
+      3    3  Exit: horario(dallas,chicago,[8:0/9:50/zz8291/todos,12:10/12:50/zz9301/habiles,18:40/19:50/zz9278/[lun,mar,mie,jue,...]]) ? 
+      3    3  Redo: horario(dallas,chicago,[8:0/9:50/zz8291/todos,12:10/12:50/zz9301/habiles,18:40/19:50/zz9278/[lun,mar,mie,jue,...]]) ? 
+      3    3  Exit: horario(dallas,los_angeles,[13:20/16:20/nw212/[lun,mar,mie,vie,dom],16:30/19:30/aa473/[lun,mie,jue,sab]]) ? 
+      3    3  Redo: horario(dallas,los_angeles,[13:20/16:20/nw212/[lun,mar,mie,vie,dom],16:30/19:30/aa473/[lun,mie,jue,sab]]) ? 
+      3    3  Exit: horario(dallas,san_francisco,[13:30/14:40/nw323/[mar,jue]]) ? 
+      2    2  Exit: findall(_51,horario(dallas,_51,_52),[chicago,los_angeles,san_francisco]) ? 
+      3    2  Call: append([],[dallas],_129) ? 
+      3    2  Exit: append([],[dallas],[dallas]) ? 
+      4    2  Call: member(_154,[chicago,los_angeles,san_francisco]) ? 
+      4    2  Exit: member(chicago,[chicago,los_angeles,san_francisco]) ? 
+      5    2  Call: \+member(chicago,[dallas]) ? 
+      6    3  Call: member(chicago,[dallas]) ? 
+      6    3  Fail: member(chicago,[dallas]) ? 
+      5    2  Exit: \+member(chicago,[dallas]) ? 
+      6    2  Call: camino(chicago,san_francisco,[dallas],_16) ? 
+      7    3  Call: findall(_196,horario(chicago,_196,_197),_237) ? 
+      8    4  Call: horario(chicago,_196,_197) ? 
+      8    4  Exit: horario(chicago,new_york,[9:10/10:0/wn458/todos,12:20/13:10/wn511/todos]) ? 
+      8    4  Redo: horario(chicago,new_york,[9:10/10:0/wn458/todos,12:20/13:10/wn511/todos]) ? 
+      8    4  Exit: horario(chicago,dallas,[9:40/10:50/aa4732/todos,11:40/12:50/aa4752/habiles,18:40/19:50/aa4822/[lun,mar,mie,jue,...]]) ? 
+      8    4  Redo: horario(chicago,dallas,[9:40/10:50/aa4732/todos,11:40/12:50/aa4752/habiles,18:40/19:50/aa4822/[lun,mar,mie,jue,...]]) ? 
+      8    4  Exit: horario(chicago,miami,[8:30/11:20/nw510/todos,11:0/13:50/aa459/todos]) ? 
+      7    3  Exit: findall(_196,horario(chicago,_196,_197),[new_york,dallas,miami]) ? 
+      8    3  Call: append([dallas],[chicago],_274) ? 
+      8    3  Exit: append([dallas],[chicago],[dallas,chicago]) ? 
+      9    3  Call: member(_301,[new_york,dallas,miami]) ? 
+      9    3  Exit: member(new_york,[new_york,dallas,miami]) ? 
+     10    3  Call: \+member(new_york,[dallas,chicago]) ? 
+     11    4  Call: member(new_york,[dallas,chicago]) ? 
+     11    4  Fail: member(new_york,[dallas,chicago]) ? 
+     10    3  Exit: \+member(new_york,[dallas,chicago]) ? 
+     11    3  Call: camino(new_york,san_francisco,[dallas,chicago],_16) ? 
+     12    4  Call: findall(_343,horario(new_york,_343,_344),_384) ? 
+     13    5  Call: horario(new_york,_343,_344) ? 
+     13    5  Exit: horario(new_york,chicago,[9:40/10:50/nw4733/todos,13:40/14:50/nw4773/habiles,19:40/20:50/nw4833/[lun,mar,mie,jue,...]]) ? 
+     13    5  Redo: horario(new_york,chicago,[9:40/10:50/nw4733/todos,13:40/14:50/nw4773/habiles,19:40/20:50/nw4833/[lun,mar,mie,jue,...]]) ? 
+     13    5  Exit: horario(new_york,washington,[9:10/11:45/united614/todos,14:45/17:20/united805/todos]) ? 
+     13    5  Redo: horario(new_york,washington,[9:10/11:45/united614/todos,14:45/17:20/united805/todos]) ? 
+     13    5  Exit: horario(new_york,boston,[9:0/9:40/zz765/[lun,mar,mie,jue,vie,sab],16:10/16:55/emi666/[lun,mar,mie,jue,vie,...]]) ? 
+     12    4  Exit: findall(_343,horario(new_york,_343,_344),[chicago,washington,boston]) ? 
+     13    4  Call: append([dallas,chicago],[new_york],_421) ? 
+     13    4  Exit: append([dallas,chicago],[new_york],[dallas,chicago,new_york]) ? 
+     14    4  Call: member(_450,[chicago,washington,boston]) ? 
+     14    4  Exit: member(chicago,[chicago,washington,boston]) ? 
+     15    4  Call: \+member(chicago,[dallas,chicago,new_york]) ? 
+     16    5  Call: member(chicago,[dallas,chicago,new_york]) ? 
+     16    5  Exit: member(chicago,[dallas,chicago,new_york]) ? 
+     15    4  Fail: \+member(chicago,[dallas,chicago,new_york]) ? 
+     14    4  Redo: member(chicago,[chicago,washington,boston]) ? 
+     14    4  Exit: member(washington,[chicago,washington,boston]) ? 
+     15    4  Call: \+member(washington,[dallas,chicago,new_york]) ? 
+     16    5  Call: member(washington,[dallas,chicago,new_york]) ? 
+     16    5  Fail: member(washington,[dallas,chicago,new_york]) ? 
+     15    4  Exit: \+member(washington,[dallas,chicago,new_york]) ? 
+     16    4  Call: camino(washington,san_francisco,[dallas,chicago,new_york],_16) ? 
+     17    5  Call: findall(_492,horario(washington,_492,_493),_533) ? 
+     18    6  Call: horario(washington,_492,_493) ? 
+     18    6  Fail: horario(washington,_492,_493) ? 
+     17    5  Exit: findall(_492,horario(washington,_492,_493),[]) ? 
+     18    5  Call: append([dallas,chicago,new_york],[washington],_561) ? 
+     18    5  Exit: append([dallas,chicago,new_york],[washington],[dallas,chicago,new_york,washington]) ? 
+     19    5  Call: member(_592,[]) ? 
+     19    5  Fail: member(_580,[]) ? 
+     16    4  Fail: camino(washington,san_francisco,[dallas,chicago,new_york],_16) ? 
+     14    4  Redo: member(washington,[chicago,washington,boston]) ? 
+     14    4  Exit: member(boston,[chicago,washington,boston]) ? 
+     15    4  Call: \+member(boston,[dallas,chicago,new_york]) ? 
+     16    5  Call: member(boston,[dallas,chicago,new_york]) ? 
+     16    5  Fail: member(boston,[dallas,chicago,new_york]) ? 
+     15    4  Exit: \+member(boston,[dallas,chicago,new_york]) ? 
+     16    4  Call: camino(boston,san_francisco,[dallas,chicago,new_york],_16) ? 
+     17    5  Call: findall(_492,horario(boston,_492,_493),_533) ? 
+     18    6  Call: horario(boston,_492,_493) ? 
+     18    6  Exit: horario(boston,new_york,[9:0/9:40/aa613/[lun,mar,mie,jue,vie,sab],16:10/16:55/united806/[lun,mar,mie,jue,vie,...]]) ? 
+     17    5  Exit: findall(_492,horario(boston,_492,_493),[new_york]) ? 
+     18    5  Call: append([dallas,chicago,new_york],[boston],_564) ? 
+     18    5  Exit: append([dallas,chicago,new_york],[boston],[dallas,chicago,new_york,boston]) ? 
+     19    5  Call: member(_595,[new_york]) ? 
+     19    5  Exit: member(new_york,[new_york]) ? 
+     20    5  Call: \+member(new_york,[dallas,chicago,new_york,boston]) ? 
+     21    6  Call: member(new_york,[dallas,chicago,new_york,boston]) ? 
+     21    6  Exit: member(new_york,[dallas,chicago,new_york,boston]) ? 
+     20    5  Fail: \+member(new_york,[dallas,chicago,new_york,boston]) ? 
+     19    5  Redo: member(new_york,[new_york]) ? 
+     19    5  Fail: member(_583,[new_york]) ? 
+     16    4  Fail: camino(boston,san_francisco,[dallas,chicago,new_york],_16) ? 
+     14    4  Redo: member(boston,[chicago,washington,boston]) ? 
+     14    4  Fail: member(_438,[chicago,washington,boston]) ? 
+     11    3  Fail: camino(new_york,san_francisco,[dallas,chicago],_16) ? 
+      9    3  Redo: member(new_york,[new_york,dallas,miami]) ? 
+      9    3  Exit: member(dallas,[new_york,dallas,miami]) ? 
+     10    3  Call: \+member(dallas,[dallas,chicago]) ? 
+     11    4  Call: member(dallas,[dallas,chicago]) ? 
+     11    4  Exit: member(dallas,[dallas,chicago]) ? 
+     10    3  Fail: \+member(dallas,[dallas,chicago]) ? 
+      9    3  Redo: member(dallas,[new_york,dallas,miami]) ? 
+      9    3  Exit: member(miami,[new_york,dallas,miami]) ? 
+     10    3  Call: \+member(miami,[dallas,chicago]) ? 
+     11    4  Call: member(miami,[dallas,chicago]) ? 
+     11    4  Fail: member(miami,[dallas,chicago]) ? 
+     10    3  Exit: \+member(miami,[dallas,chicago]) ? 
+     11    3  Call: camino(miami,san_francisco,[dallas,chicago],_16) ? 
+     12    4  Call: findall(_343,horario(miami,_343,_344),_384) ? 
+     13    5  Call: horario(miami,_343,_344) ? 
+     13    5  Exit: horario(miami,chicago,[8:30/11:20/jk999/todos,11:0/13:50/zz901/todos]) ? 
+     12    4  Exit: findall(_343,horario(miami,_343,_344),[chicago]) ? 
+     13    4  Call: append([dallas,chicago],[miami],_415) ? 
+     13    4  Exit: append([dallas,chicago],[miami],[dallas,chicago,miami]) ? 
+     14    4  Call: member(_444,[chicago]) ? 
+     14    4  Exit: member(chicago,[chicago]) ? 
+     15    4  Call: \+member(chicago,[dallas,chicago,miami]) ? 
+     16    5  Call: member(chicago,[dallas,chicago,miami]) ? 
+     16    5  Exit: member(chicago,[dallas,chicago,miami]) ? 
+     15    4  Fail: \+member(chicago,[dallas,chicago,miami]) ? 
+     14    4  Redo: member(chicago,[chicago]) ? 
+     14    4  Fail: member(_432,[chicago]) ? 
+     11    3  Fail: camino(miami,san_francisco,[dallas,chicago],_16) ? 
+      9    3  Redo: member(miami,[new_york,dallas,miami]) ? 
+      9    3  Fail: member(_289,[new_york,dallas,miami]) ? 
+      6    2  Fail: camino(chicago,san_francisco,[dallas],_16) ? 
+      4    2  Redo: member(chicago,[chicago,los_angeles,san_francisco]) ? 
+      4    2  Exit: member(los_angeles,[chicago,los_angeles,san_francisco]) ? 
+      5    2  Call: \+member(los_angeles,[dallas]) ? 
+      6    3  Call: member(los_angeles,[dallas]) ? 
+      6    3  Fail: member(los_angeles,[dallas]) ? 
+      5    2  Exit: \+member(los_angeles,[dallas]) ? 
+      6    2  Call: camino(los_angeles,san_francisco,[dallas],_16) ? 
+      7    3  Call: findall(_196,horario(los_angeles,_196,_197),_237) ? 
+      8    4  Call: horario(los_angeles,_196,_197) ? 
+      8    4  Exit: horario(los_angeles,dallas,[13:20/16:20/nw979/habiles]) ? 
+      8    4  Redo: horario(los_angeles,dallas,[13:20/16:20/nw979/habiles]) ? 
+      8    4  Exit: horario(los_angeles,san_francisco,[11:30/12:40/sw322/[mar,jue]]) ? 
+      7    3  Exit: findall(_196,horario(los_angeles,_196,_197),[dallas,san_francisco]) ? 
+      8    3  Call: append([dallas],[los_angeles],_271) ? 
+      8    3  Exit: append([dallas],[los_angeles],[dallas,los_angeles]) ? 
+      9    3  Call: member(_298,[dallas,san_francisco]) ? 
+      9    3  Exit: member(dallas,[dallas,san_francisco]) ? 
+     10    3  Call: \+member(dallas,[dallas,los_angeles]) ? 
+     11    4  Call: member(dallas,[dallas,los_angeles]) ? 
+     11    4  Exit: member(dallas,[dallas,los_angeles]) ? 
+     10    3  Fail: \+member(dallas,[dallas,los_angeles]) ? 
+      9    3  Redo: member(dallas,[dallas,san_francisco]) ? 
+      9    3  Exit: member(san_francisco,[dallas,san_francisco]) ? 
+     10    3  Call: \+member(san_francisco,[dallas,los_angeles]) ? 
+     11    4  Call: member(san_francisco,[dallas,los_angeles]) ? 
+     11    4  Fail: member(san_francisco,[dallas,los_angeles]) ? 
+     10    3  Exit: \+member(san_francisco,[dallas,los_angeles]) ? 
+     11    3  Call: camino(san_francisco,san_francisco,[dallas,los_angeles],_16) ? 
+     11    3  Exit: camino(san_francisco,san_francisco,[dallas,los_angeles],[dallas,los_angeles]) ? 
+      6    2  Exit: camino(los_angeles,san_francisco,[dallas],[dallas,los_angeles]) ? 
+      1    1  Exit: camino(dallas,san_francisco,[],[dallas,los_angeles]) ? 
+
+
+
+dallas,los_angeles,san_francisco,seattle
+[[
+13:20/16:20/nw212/[lun,mar,mie,vie,dom], check
+16:30/19:30/aa473/[lun,mie,jue,sab]], check
+[],?
+11:10/12:20/sw211/[lun,mar,mie,vie,dom],
+20:30/21:30/nw472/[lun,mie,jue,sab]] ? ;
+
+
+resultado de
+findall(X, camino(Origen, Destino, [], X), Paths),
+    map_flights(Paths, Dia, Flights).
+
+[[dallas,los_angeles,san_francisco,seattle],[dallas,san_francisco,seattle]]
+
+[
+[[13:20/16:20/nw212/[lun,mar,mie,vie,dom],16:30/19:30/aa473/[lun,mie,jue,sab]],[],11:10/12:20/sw211/[lun,mar,mie,vie,dom],20:30/21:30/nw472/[lun,mie,jue,sab]],
+
+[],11:10/12:20/sw211/[lun,mar,mie,vie,dom],20:30/21:30/nw472/[lun,mie,jue,sab]
+]
+
+
+
+[
+[[13:20/16:20/nw212/[lun,mar,mie,vie,dom],16:30/19:30/aa473/[lun,mie,jue,sab]],[],11:10/12:20/sw211/[lun,mar,mie,vie,dom],20:30/21:30/nw472/[lun,mie,jue,sab]],
+
+[],11:10/12:20/sw211/[lun,mar,mie,vie,dom],20:30/21:30/nw472/[lun,mie,jue,sab]
+]
+
+
+map_fligth
+ [
+primer arreglo
+[
+[13:20/16:20/nw212/[lun,mar,mie,vie,dom],16:30/19:30/aa473/[lun,mie,jue,sab]]
+,
+[],
+11:10/12:20/sw211/[lun,mar,mie,vie,dom],20:30/21:30/nw472/[lun,mie,jue,sab]
+],
+segundo arreglo
+[[],11:10/12:20/sw211/[lun,mar,mie,vie,dom],20:30/21:30/nw472/[lun,mie,jue,sab]
+]
+ ] ? 
+--------------------------------------------
+[
+[[],11:10/12:20/sw211/[lun,mar,mie,vie,dom],20:30/21:30/nw472/[lun,mie,jue,sab]]
+] 
+
+
+------------------------------------------------------------------------------
+
+
+[
+primer arreglo
+[
+[13:20/16:20/nw212/[lun,mar,mie,vie,dom],16:30/19:30/aa473/[lun,mie,jue,sab]],
+[],
+[11:10/12:20/sw211/[lun,mar,mie,vie,dom],20:30/21:30/nw472/[lun,mie,jue,sab]]
+],
+[
+segundo arreglo
+[],
+[11:10/12:20/sw211/[lun,mar,mie,vie,dom],20:30/21:30/nw472/[lun,mie,jue,sab]]
+]
+]
+
+---------------------------------------------------------------------
+[
+[
+[13:20/16:20/nw212/[lun,mar,mie,vie,dom],16:30/19:30/aa473/[lun,mie,jue,sab]],
+[11:30/12:40/sw322/[mar,jue]],
+[11:10/12:20/sw211/[lun,mar,mie,vie,dom],20:30/21:30/nw472/[lun,mie,jue,sab]]
+],
+[
+[13:30/14:40/nw323/[mar,jue]],
+[11:10/12:20/sw211/[lun,mar,mie,vie,dom],
+20:30/21:30/nw472/[lun,mie,jue,sab]]
+]
+]

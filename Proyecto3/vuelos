@@ -1,0 +1,10 @@
+horario( dallas, los_angeles,
+           [ 13:20 / 16:20 / nw212 / [lun,mar,mie,vie,dom],
+             16:30 / 19:30 / aa473 / [lun,mie,jue,sab] ] ). 
+
+horario( los_angeles, san_francisco,
+           [ 11:30 / 12:40 / sw322 / [mar,jue] ] ).
+
+horario( san_francisco, seattle,
+           [ 11:10 / 11:20 / sw211 / [lun,mar,mie,vie,dom],
+             20:30 / 21:30 / nw472 / [lun,mie,jue,sab] ] ). 
