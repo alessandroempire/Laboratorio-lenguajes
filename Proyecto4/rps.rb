@@ -95,4 +95,76 @@ end
 
 
 class Strategy
+    attr_reader :name, :strategy
+    attr_accessor :list
+
+    def initialize(name, strategy)
+        @name = name
+        @strategy = strategy
+    end
+
+    def next(ms)
+    end
+
+    def to_s
+    end
+
+    def reset
+    end
+
+    def Uniform
+    end
+
+    def Biased
+    end
+
+    def Mirror
+    end
+
+    def Smart
+    end
+
+end
+
+class Match
+    attr_accessor :info, :score
+
+    def initialize(m)
+        @info = Hash.new
+        @info.replace(m)
+        self.start_score
+    end
+
+    def start_score
+        @score = Hash.new
+        @info.each do |key, val|
+            @score[key] = 0    
+        end
+        @score[:Rounds] = 0
+    end
+
+    def to_s
+        @info.to_s
+    end 
+
+    def rounds(n)
+        until n == 0
+            @score[:Rounds] += 1
+            puts @score
+            n -= 1
+        end
+    end
+
+    def upto(n)
+        while true 
+            n += 1
+            puts n
+            break if n > 5
+        end
+    end
+
+    def restart
+        start_score
+    end
+    
 end

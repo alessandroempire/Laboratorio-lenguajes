@@ -1,3 +1,6 @@
+Noten que son 224 líneas usando a fondo las librerías Hash y Array. 
+Código "imperativo clásico" quizás requiera el doble o más. #ci3661
+
 gets.chomp 
 lee del terminal
 
