@@ -1,0 +1,91 @@
+gets.chomp 
+lee del terminal
+
+The reason Ruby counted to 9 and not 10 was because we used three dots in the range; this tells Ruby to exclude the final number in the count: for num in 1...10 means "go up to but don't include 10." If we use two dots, this tells Ruby to include the highest number in the range.
+
+my_hash = { 
+    "name" => "Eric",
+    "age" => 26,
+    "hungry?" => true
+}
+
+puts my_hash["name"]
+puts my_hash["age"]
+puts my_hash["hungry?"]
+
+se inicializa con 
+Hash.new
+
+pets = Hash.new
+pets["Stevie"] = "cat"
+# Adds the key "Stevie" with the
+# value "cat" to the hash
+
+numbers = [1, 2, 3, 4, 5]
+numbers.each { |element| puts element }
+
+restaurant_menu = {
+  "noodles" => 4,
+  "soup" => 3,
+  "salad" => 2
+}
+
+restaurant_menu.each do |item, price|
+  puts "#{item}: #{price}"
+end
+
+The header, which includes the def keyword, the name of the method, and any arguments the method takes. (We'll get to arguments in the next section)
+def square(n)
+  puts n ** 2
+end
+
+The solution: splat arguments. Splat arguments are arguments preceded by a *, which signals to Ruby: "Hey Ruby, I don't know how many arguments there are about to be, but it could be more than one."
+
+We can also use a new operator called the combined comparison operator to compare two Ruby objects. The combined comparison operator looks like this: <=>. It returns 0 if the first operand (item to be compared) equals the second, 1 if first operand is greater than the second, and -1 if the first operand is less than the second.
+
+
+Symbols make good hash keys for a few reasons:
+They're immutable, meaning they can't be changed once they're created;
+Only one copy of any symbol exists at a given time, so they save memory;
+Symbol-as-keys are faster than strings-as-keys because of the above two reasons.
+
+ Ruby's methods will return the result of the last evaluated expression.
+
+ $, @, or @@? This helps mark them as global, instance, and class variables (respectively).
+ 
+Recall that instance variables begin with an @. This isn't just a Ruby convention—it's part of the syntax! Always start your instance variables with @.
+
+Class variables are like instance variables, but instead of belonging to an instance of a class, they belong to the class itself. Class variables always start with two @s, like so: @@files.
+
+Global variables can be declared in two ways. The first is one that's already familiar to you: you just define the variable outside of any method or class, and voilà! It's global. If you want to make a variable global from inside a method or class, just start it with a $, like so: $matz.
+
+class ClassName
+  # Some class stuff
+
+  public
+  # Public methods go here
+  def public_method; end
+
+  private
+  # Private methods go here
+  def private_method; end
+end 
+
+class Person
+  attr_reader :name
+  attr_writer :name
+  def initialize(name)
+    @name = name
+  end
+end
+Ruby does something like this for us automatically:
+
+def name
+  @name
+end
+
+def name=(value)
+  @name = value
+end
+
+If we want to both read and write a particular variable, there's an even shorter shortcut than using attr_reader and attr_writer. We can use attr_accessor to make a variable readable and writeable in one fell swoop.
