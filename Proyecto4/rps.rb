@@ -101,6 +101,7 @@ class Strategy
     def initialize(name, strategy)
         @name = name
         @strategy = strategy
+        @list = Array.new
     end
 
     def next(ms)
@@ -111,20 +112,21 @@ class Strategy
 
     def reset
     end
-
-    def Uniform
-    end
-
-    def Biased
-    end
-
-    def Mirror
-    end
-
-    def Smart
-    end
-
 end
+
+class Uniform < Strategy
+end
+
+class Biased < Strategy
+end
+
+class Mirror < Strategy
+end
+
+class Smart < Strategy
+end
+
+
 
 class Match
     attr_accessor :info, :score
