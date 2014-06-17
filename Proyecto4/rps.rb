@@ -96,9 +96,12 @@ class Strategy
     end
 
     def next(ms)
+        @strategy.next
     end
 
     def to_s
+        puts @name
+        puts @strategy
     end
 
     def reset
@@ -165,44 +168,44 @@ end
 
 
 class Match
-    attr_accessor :info, :score
+    attr_accessor :player1, :player2, :scoreboard
 
     def initialize(m)
-        @info = Hash.new
-        @info.replace(m)
-        self.start_score
-    end
-
-    def start_score
-        @score = Hash.new
-        @info.each do |key, val|
-            @score[key] = 0    
+        aux = Array.new
+        @scoreboard = Hash.new
+        m.each do |key,val|
+            a = Strategy.new(key, val)
+            aux.push(a)
+            @scoreboard[key] = 0 
         end
-        @score[:Rounds] = 0
+        @player2 = aux.pop
+        @player1 = aux.pop
+        @scoreboard[:Rounds] = 0
     end
 
     def to_s
-        @info.to_s
+#        @info.to_s
     end 
 
     def rounds(n)
         until n == 0
-            @score[:Rounds] += 1
-            puts @score
+            @scoreboard[:Rounds] += 1
             n -= 1
         end
     end
 
     def upto(n)
-        while true 
-            n += 1
-            puts n
-            break if n > 5
-        end
+        #while true 
+        #    n += 1
+        #    puts n
+        #    break if n > 5
+        #end
     end
 
     def restart
-        start_score
+        @scoreboard.each do |key,val|
+            @scoreboard[key] = 0
+        end
     end
     
 end
