@@ -7,28 +7,27 @@
 =end
 
 
-#Clase
+# Clase Movement
+# Se inicializa con el Movimiento deseado, Ej. Movement.new(Rock)
 
 class Movement
     attr_reader :name
 
-    def initialize(ini="Movement")
+    def initialize(ini)
         @name = ini 
     end
 
     def to_s
-        name
+        @name.to_s
+    end
+
+    def score(m)
+        @name.score(m)
     end
 end
 
 class Rock < Movement
-    attr_reader :name
-
-    def initialize (ini="Rock")
-        @name = ini
-    end
-
-    def score(m)
+    def self.score(m)
         m.score_rock
     end
 
@@ -46,13 +45,7 @@ class Rock < Movement
 end
 
 class Paper < Movement
-    attr_reader :name
-
-    def initialize (ini="Paper")
-        @name = ini
-    end
-
-    def score(m)
+    def self.score(m)
         m.score_paper
     end
 
@@ -70,13 +63,7 @@ class Paper < Movement
 end
 
 class Scissors < Movement
-    attr_reader :name
-
-    def initialize (ini="Scissors")
-        @name = ini
-    end
-
-    def score(m)
+    def self.score(m)
         m.score_scissors
     end
 
@@ -93,15 +80,19 @@ class Scissors < Movement
     end
 end
 
+# Clase Strategy
+# name sera un String. strategy sera el nombre de la estrategia a usar. 
+# my_mov sera una lista, que lleva los movimientos del juegador
+# se necestia una lista para los movimientos del contricante. ms?
+# puedo usar push y pop....
 
 class Strategy
     attr_reader :name, :strategy
-    attr_accessor :list
+    attr_accessor :my_mov
 
     def initialize(name, strategy)
         @name = name
         @strategy = strategy
-        @list = Array.new
     end
 
     def next(ms)
@@ -115,12 +106,40 @@ class Strategy
 end
 
 class Uniform < Strategy
+    attr_accessor :list
+
+    def initialize(ms)
+        raise "Lista de movimientos de Uniform vacio" if ms.size == 0
+        @list = ms & ms
+    end
+
+    def next
+        p   = @list.size
+        n   = rand(1..p) - 1
+        mov = @list[n]
+        cl  = eval(:mov.to_s)
+    end
 end
 
 class Biased < Strategy
+    attr_accessor :map
+
+    def initialize(ma)
+        raise "Map de movimientos en Biased vacio" if ma.length == 0
+        #falta eliminar duplicados
+    end
+
+    def next
+    end
 end
 
 class Mirror < Strategy
+    attr_accessor :list_o, :mov
+
+    def initialize(mov)
+        @mov = mov
+    end
+
 end
 
 class Smart < Strategy
