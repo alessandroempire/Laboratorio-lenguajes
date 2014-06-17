@@ -117,19 +117,36 @@ class Uniform < Strategy
         p   = @list.size
         n   = rand(1..p) - 1
         mov = @list[n]
-        cl  = eval(:mov.to_s)
+        cl  = eval(mov.to_s)
     end
 end
 
 class Biased < Strategy
-    attr_accessor :map
+    attr_accessor :map, :total
 
     def initialize(ma)
         raise "Map de movimientos en Biased vacio" if ma.length == 0
-        #falta eliminar duplicados
+        #hash elimina dulicados por si solo...
+        @map = Hash.new
+        @map.replace(ma)
+        @total = 0
+        ma.each do |key, val|
+            @total += val
+        end
     end
 
     def next
+        n = rand(1..@total)
+        puts n
+        x = 0
+        @map.each do |key,val|
+            puts x
+            if n.between?(x+1,val + x)
+                return eval(key.to_s)
+            else
+                x += val
+            end
+        end
     end
 end
 
