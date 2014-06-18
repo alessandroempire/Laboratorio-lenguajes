@@ -1,11 +1,7 @@
-=begin
- Alessandro La Corte
- Donato Rolo
+# Alessandro La Corte
+# Donato Rolo
 
- Juegos de Manos
-
-=end
-
+# Juegos de Manos
 
 # Clase Movement
 # Se inicializa con el Movimiento deseado, Ej. Movement.new(Rock)
@@ -177,7 +173,6 @@ class Mirror < Strategy
             ms.last
         end
     end
-
 end
 
 class Smart < Strategy
@@ -195,9 +190,9 @@ class Smart < Strategy
 
     def next(ms)
         up_count(ms.last) if ms.size != 0
-        puts @p
-        puts @r
-        puts @s
+        #puts @p
+        #puts @r
+        #puts @s
         l = @p + @r + @s - 1
         n = rand(0..l)
         if n == nil
@@ -222,6 +217,9 @@ class Smart < Strategy
         end
     end
 
+    def reset
+        initialize
+    end
 end
 
 class Match
@@ -271,13 +269,13 @@ class Match
     end
 
     def play
-        puts "ronda"
+        #puts "ronda"
         m1 = @player1.next(@list2)
         m2 = @player2.next(@list1)
         @list1.push(m1)
         @list2.push(m2)
-        puts m1.to_s
-        puts m2.to_s
+        #puts m1.to_s
+        #puts m2.to_s
         result = m1.score(m2)
         @scoreboard[@player2.name] += result.pop
         @scoreboard[@player1.name] += result.pop
