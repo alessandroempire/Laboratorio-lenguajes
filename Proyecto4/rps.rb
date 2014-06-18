@@ -88,36 +88,14 @@ end
 
 class Strategy
     attr_reader :name, :strategy
-    attr_accessor :mov, :p, :r, :s
 
     def initialize(name, strategy)
         @name = name
         @strategy = strategy
-        start_mov
-    end
-
-    def start_mov
-        @mov = Array.new
-        @p   = 0 
-        @r   = 0
-        @s   = 0
     end
 
     def next(ms)
-        m = @strategy.next(ms)
-        @mov.push(m)
-        update(m)
-        m
-    end
-
-    def update(m)
-        if m == Paper
-            @p += 1
-        elsif m == Rock
-            @r += 1
-        else
-            @s += 1
-        end
+        @strategy.next(ms)
     end
 
     def to_s
@@ -126,7 +104,6 @@ class Strategy
     end
 
     def reset
-        start_mov
     end
 end
 
@@ -146,7 +123,8 @@ class Uniform < Strategy
     def next(*a)
         p   = @list.size
         n   = rand(1..p) - 1
-        cl  = eval(@list[n].to_s)
+        mov = @list[n]
+        cl  = eval(mov.to_s)
     end
 end
 
@@ -199,11 +177,16 @@ class Mirror < Strategy
             ms.last
         end
     end
+
 end
 
 class Smart < Strategy
+    attr_accessor :p, :r, :s
+
     def initialize
-        start_mov
+        @p = 0
+        @r = 0
+        @s = 0
     end
 
     def to_s
@@ -211,24 +194,40 @@ class Smart < Strategy
     end
 
     def next(ms)
-        l = p + r + s - 1
-        puts l
+        up_count(ms.last) if ms.size != 0
+        puts @p
+        puts @r
+        puts @s
+        l = @p + @r + @s - 1
         n = rand(0..l)
         if n == nil
             return Scissors
         end
-        if n.between?(0, p-1)
+        if n.between?(0, @p-1)
             return Scissors
-        elsif n.between?(0, p+r-1)
+        elsif n.between?(0, @p+@r-1)
             return Paper
         else
             return Rock
         end
     end
+
+    def up_count(x)
+        if x == Paper
+            @p += 1
+        elsif x == Rock
+            @r += 1
+        else
+            @s += 1
+        end
+    end
+
 end
 
 class Match
-    attr_accessor :player1, :player2, :scoreboard
+    attr_accessor :player1, :list1,
+                  :player2, :list2,
+                  :scoreboard
 
     def initialize(m)
         aux = Array.new
@@ -241,11 +240,17 @@ class Match
         @player2 = aux.pop
         @player1 = aux.pop
         @scoreboard[:Rounds] = 0
+            start_mov
     end
 
     def to_s
         @player1.to_s
         @player2.to_s
+    end 
+
+    def start_mov
+        @list1 = Array.new
+        @list2 = Array.new
     end
 
     def rounds(n)
@@ -267,14 +272,10 @@ class Match
 
     def play
         puts "ronda"
-        last1 = Array.new
-        last2 = Array.new
-        last1.replace(@player1.mov)
-        last2.replace(@player2.mov)
-        puts last1.to_s
-        puts last2.to_s
-        m1 = @player1.next(last2)
-        m2 = @player2.next(last1)
+        m1 = @player1.next(@list2)
+        m2 = @player2.next(@list1)
+        @list1.push(m1)
+        @list2.push(m2)
         puts m1.to_s
         puts m2.to_s
         result = m1.score(m2)
@@ -284,10 +285,9 @@ class Match
     end
 
     def restart
+        start_mov
         @scoreboard.each do |key,val|
             @scoreboard[key] = 0
         end
-        @player1.reset
-        @player2.reset
     end  
 end
