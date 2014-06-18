@@ -4,6 +4,8 @@ s2 = Biased.new ( {:Rock => 1, :Scissors => 3, :Paper => 2} )
 
 s3 = Mirror.new(Rock)
 
+s4 = Smart.new
+
 
 m = Match.new({ :Ale => s1, :Maga => s2})
 
