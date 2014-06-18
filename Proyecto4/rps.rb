@@ -93,18 +93,22 @@ class Strategy
     def initialize(name, strategy)
         @name = name
         @strategy = strategy
+        @my_mov = Array.new
     end
 
     def next(ms)
-        @strategy.next
+        mov = @strategy.next(ms)
+        @my_mov.push(mov)
+        mov
     end
 
     def to_s
         puts @name
-        puts @strategy
+        puts @strategy.to_s
     end
 
     def reset
+        @my_mov = Array.new
     end
 end
 
@@ -116,7 +120,12 @@ class Uniform < Strategy
         @list = ms & ms
     end
 
-    def next
+    def to_s
+        puts "Uniform"
+        @list
+    end
+
+    def next(*a)
         p   = @list.size
         n   = rand(1..p) - 1
         mov = @list[n]
@@ -129,7 +138,6 @@ class Biased < Strategy
 
     def initialize(ma)
         raise "Map de movimientos en Biased vacio" if ma.length == 0
-        #hash elimina dulicados por si solo...
         @map = Hash.new
         @map.replace(ma)
         @total = 0
@@ -138,12 +146,15 @@ class Biased < Strategy
         end
     end
 
-    def next
+    def to_s
+        puts "Biased"
+        @map
+    end
+
+    def next(*a)
         n = rand(1..@total)
-        puts n
         x = 0
         @map.each do |key,val|
-            puts x
             if n.between?(x+1,val + x)
                 return eval(key.to_s)
             else
@@ -154,18 +165,36 @@ class Biased < Strategy
 end
 
 class Mirror < Strategy
-    attr_accessor :list_o, :mov
+    attr_accessor :mov
 
     def initialize(mov)
         @mov = mov
     end
 
+    def to_s
+        puts "Mirror"
+    end
+
+    def next(ms)
+        if ms.size == 0
+            @mov
+        else
+            ms.last
+        end
+    end
+
 end
 
 class Smart < Strategy
+    def initialize
+    end
+
+    def to_s
+    end
+
+    def next
+    end
 end
-
-
 
 class Match
     attr_accessor :player1, :player2, :scoreboard
@@ -184,28 +213,49 @@ class Match
     end
 
     def to_s
-#        @info.to_s
+        @player1.to_s
+        @player2.to_s
     end 
 
     def rounds(n)
         until n == 0
-            @scoreboard[:Rounds] += 1
+            play
             n -= 1
         end
+        @scoreboard
     end
 
     def upto(n)
-        #while true 
-        #    n += 1
-        #    puts n
-        #    break if n > 5
-        #end
+        while true 
+            break if @scoreboard[@player2.name] == n 
+            break if @scoreboard[@player1.name] == n
+            play
+        end
+        @scoreboard
+    end
+
+    def play
+        puts "ronda"
+        last1 = Array.new
+        last2 = Array.new
+        last1.replace(@player1.my_mov)
+        last2.replace(@player2.my_mov)
+        #puts last1.to_s
+        #puts last2.to_s
+        m1 = @player1.next(last2)
+        m2 = @player2.next(last1)
+        puts m1.to_s
+        puts m2.to_s
+        result = m1.score(m2)
+        @scoreboard[@player2.name] += result.pop
+        @scoreboard[@player1.name] += result.pop
+        @scoreboard[:Rounds] += 1
     end
 
     def restart
         @scoreboard.each do |key,val|
             @scoreboard[key] = 0
         end
-    end
-    
+        #restart de cada player
+    end  
 end
