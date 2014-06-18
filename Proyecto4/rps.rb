@@ -88,18 +88,14 @@ end
 
 class Strategy
     attr_reader :name, :strategy
-    attr_accessor :my_mov
 
     def initialize(name, strategy)
         @name = name
         @strategy = strategy
-        @my_mov = Array.new
     end
 
     def next(ms)
-        mov = @strategy.next(ms)
-        @my_mov.push(mov)
-        mov
+        @strategy.next(ms)
     end
 
     def to_s
@@ -108,7 +104,6 @@ class Strategy
     end
 
     def reset
-        @my_mov = Array.new
     end
 end
 
@@ -197,7 +192,9 @@ class Smart < Strategy
 end
 
 class Match
-    attr_accessor :player1, :player2, :scoreboard
+    attr_accessor :player1, :list1,
+                  :player2, :list2,
+                  :scoreboard
 
     def initialize(m)
         aux = Array.new
@@ -210,12 +207,18 @@ class Match
         @player2 = aux.pop
         @player1 = aux.pop
         @scoreboard[:Rounds] = 0
+        start_mov
     end
 
     def to_s
         @player1.to_s
         @player2.to_s
     end 
+
+    def start_mov
+        @list1 = Array.new
+        @list2 = Array.new
+    end
 
     def rounds(n)
         until n == 0
@@ -236,14 +239,10 @@ class Match
 
     def play
         puts "ronda"
-        last1 = Array.new
-        last2 = Array.new
-        last1.replace(@player1.my_mov)
-        last2.replace(@player2.my_mov)
-        #puts last1.to_s
-        #puts last2.to_s
-        m1 = @player1.next(last2)
-        m2 = @player2.next(last1)
+        m1 = @player1.next(@list2)
+        m2 = @player2.next(@list1)
+        @list1.push(m1)
+        @list2.push(m2)
         puts m1.to_s
         puts m2.to_s
         result = m1.score(m2)
@@ -256,6 +255,6 @@ class Match
         @scoreboard.each do |key,val|
             @scoreboard[key] = 0
         end
-        #restart de cada player
+        start_mov
     end  
 end
