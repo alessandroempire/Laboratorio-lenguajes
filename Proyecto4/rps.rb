@@ -100,6 +100,7 @@ class Strategy
     end
 
     def reset
+        @strategy.reset
     end
 end
 
@@ -121,6 +122,9 @@ class Uniform < Strategy
         n   = rand(1..p) - 1
         mov = @list[n]
         cl  = eval(mov.to_s)
+    end
+
+    def reset
     end
 end
 
@@ -153,13 +157,17 @@ class Biased < Strategy
             end
         end
     end
+
+    def reset
+    end
 end
 
 class Mirror < Strategy
-    attr_accessor :mov
+    attr_accessor :mov, :key
 
     def initialize(mov)
         @mov = mov
+        @key = true
     end
 
     def to_s
@@ -167,11 +175,16 @@ class Mirror < Strategy
     end
 
     def next(ms)
-        if ms.size == 0
+        if ms.size == 0 or @key
+            @key = false
             @mov
         else
             ms.last
         end
+    end
+
+    def reset
+        @key = true
     end
 end
 
@@ -284,6 +297,8 @@ class Match
 
     def restart
         start_mov
+        @player1.reset
+        @player2.reset
         @scoreboard.each do |key,val|
             @scoreboard[key] = 0
         end
