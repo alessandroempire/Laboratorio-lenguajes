@@ -3,30 +3,13 @@
 
 module BFSProcedures
 
-    # def find(start,predicate)
-    #     if start
-    #         puts start.value
-    #         if predicate.call(start.value)
-    #             return start
-    #         else
-    #             sons = []
-    #             block = lambda{ |son| sons << son}
-    #             start.each(block)
-    #             while !sons.empty?
-    #                 newstart = sons.shift
-    #                 find(newstart, predicate)    
-    #             end
-    #         end 
-    #     end
-    # end
-
     def find(start, predicate)
 
         if predicate.call(start.value)
             start
         else
             rest = []
-            block = lambda{ |son| rest << son}
+            block = lambda{ |son| if son != nil; rest << son; end}
             start.each(block)
             while !rest.empty?
                 aux = rest.shift
@@ -38,28 +21,62 @@ module BFSProcedures
         end
     end
 
-    def pathaux(start,predicate,arreglo)
+    def pathaux(start,predicate)
 
         if predicate.call(start.value)
-            return arreglo << start.value
+            
+            return [start.value]
+        
         else
-            rest = []
-            block = lambda{ |son| rest << son}
-            start.each(block)
-            while !rest.empty?
-                aux = rest.shift
-                if predicate.call(aux.value)
-                    return aux
-                end
-                aux.each(block)
+
+            open = []
+            close0 = []
+
+            open.push([[start.value]])
+
+            i = 0
+
+            while !open.empty?
+                puts "#{i}"
+                close0 << open.shift
+                aux = Array.new(close0.last)
+
+                print aux
+                
+                block = lambda{|elem| elem == aux.last}
+
+                # find esta retornando nil
+                elem = find(start, block)
+
+                puts elem.value
+                puts elem.left.value
+
+                block2 = lambda {|elem2| if (elem2 != nil); x = Array.new(aux.push(elem2.value)); open.push(x); end}
+                elem.each(block2)
+                i = i + 1
             end
+
+            return close0
         end
     end
-
 
 end
 
+# a = BinTree.new(4,nil,nil)
+# b = BinTree.new(5,nil,nil)
+# c = BinTree.new(6,nil,nil)
+# d = BinTree.new(7,nil,nil)
+
+# e = BinTree.new(2,a,b)
+# f = BinTree.new(3,c,d)
+
+# g = BinTree.new(1,e,f)
+
+
+
+
 class BinTree
+
     attr_accessor :value, # Valor almacenado en el nodo
                   :left,  # BinTree izquierdo
                   :right  # BinTree derecho
@@ -79,8 +96,12 @@ class BinTree
 end
 
 class GraphNode
+
     attr_accessor :value,    # Valor alamacenado en el nodo
                   :children  # Arreglo de sucesores GraphNode
+
+    include BFSProcedures
+
     def initialize(v,c)
         @value = v
         @children = c
