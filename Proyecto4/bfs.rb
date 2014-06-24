@@ -21,7 +21,7 @@ module BFSProcedures
         end
     end
 
-    def pathaux(start,predicate)
+    def path(start, predicate)
 
         if predicate.call(start.value)
             
@@ -30,34 +30,44 @@ module BFSProcedures
         else
 
             open = []
-            close0 = []
+            close = []
 
-            open.push([[start.value]])
+            open.push([start.value])
 
-            i = 0
+            i = 0 
 
             while !open.empty?
-                puts "#{i}"
-                close0 << open.shift
-                aux = Array.new(close0.last)
+                puts "---------------------------------------"
+                puts "Vuelta #{i}"
+                close << open.shift
+                actual = close.last.clone
 
-                print aux
-                
-                block = lambda{|elem| elem == aux.last}
+                block = lambda{|elem| elem == actual.last}
 
-                # find esta retornando nil
-                elem = find(start, block)
+                elem = start.find(start, block)
 
-                puts elem.value
-                puts elem.left.value
-
-                block2 = lambda {|elem2| if (elem2 != nil); x = Array.new(aux.push(elem2.value)); open.push(x); end}
+                # falta agregar que si ya en el arreglo open o close hay un camino que termine con suc.value no se agregue el camino a open"
+                block2 = lambda {|suc| if (suc != nil); aux = actual.clone; x = Array.new(aux.push(suc.value)); open.push(x); end}
                 elem.each(block2)
+
+                puts "ESTE ES OPEN"
+                print open
+                puts ""
+
+                puts "ESTE ES CLOSE"
+                print close
+                puts ""
+
                 i = i + 1
             end
 
-            return close0
+            # falta hacer que solo retorne el camino al nodo que satisface el predicate
+            return close
         end
+    end
+
+    def walk(start, action)
+
     end
 
 end
