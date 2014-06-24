@@ -247,9 +247,11 @@ class Match
                   :scoreboard
 
     def initialize(m)
+        raise "Numero de jugadores incorrecto" if m.length != 2 
         aux = Array.new
         @scoreboard = Hash.new
         m.each do |key,val|
+            raise "No son estrategias." unless val.kind_of? Strategy
             a = Strategy.new(key, val)
             aux.push(a)
             @scoreboard[key] = 0 
