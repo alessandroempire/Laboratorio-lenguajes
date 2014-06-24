@@ -83,6 +83,7 @@ end
 # puedo usar push y pop....
 
 class Strategy
+    @@seed = 42
     attr_reader :name, :strategy
 
     def initialize(name, strategy)
@@ -105,11 +106,12 @@ class Strategy
 end
 
 class Uniform < Strategy
-    attr_accessor :list
+    attr_accessor :list, :r
 
     def initialize(ms)
         raise "Lista de movimientos de Uniform vacio" if ms.size == 0
         @list = ms & ms
+        @r = Random.new(@@seed)
     end
 
     def to_s
@@ -119,17 +121,18 @@ class Uniform < Strategy
 
     def next(*a)
         p   = @list.size
-        n   = rand(1..p) - 1
+        n   = @r.rand p
         mov = @list[n]
         cl  = eval(mov.to_s)
     end
 
     def reset
+        @r = Random.new(@@seed)
     end
 end
 
 class Biased < Strategy
-    attr_accessor :map, :total
+    attr_accessor :map, :total, :r
 
     def initialize(ma)
         raise "Map de movimientos en Biased vacio" if ma.length == 0
@@ -139,6 +142,7 @@ class Biased < Strategy
         ma.each do |key, val|
             @total += val
         end
+        @r = Random.new(@@seed)
     end
 
     def to_s
@@ -147,10 +151,11 @@ class Biased < Strategy
     end
 
     def next(*a)
-        n = rand(1..@total)
-        x = 0
+        n  = @r.rand @total
+        n += 1
+        x = map.values[0]
         @map.each do |key,val|
-            if n.between?(x+1,val + x)
+            if n.between?(x,(val-1) + x)
                 return eval(key.to_s)
             else
                 x += val
@@ -159,6 +164,7 @@ class Biased < Strategy
     end
 
     def reset
+        @r = Random.new(@@seed)
     end
 end
 
@@ -269,6 +275,7 @@ class Match
             play
             n -= 1
         end
+        reset
         @scoreboard
     end
 
@@ -278,6 +285,7 @@ class Match
             break if @scoreboard[@player1.name] == n
             play
         end
+        reset
         @scoreboard
     end
 
@@ -295,10 +303,14 @@ class Match
         @scoreboard[:Rounds] += 1
     end
 
-    def restart
-        start_mov
+    def reset
         @player1.reset
         @player2.reset
+    end
+
+    def restart
+        start_mov
+        reset
         @scoreboard.each do |key,val|
             @scoreboard[key] = 0
         end
