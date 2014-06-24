@@ -3,6 +3,14 @@
 
 module BFSProcedures
 
+    def alreadyExists(elem)
+        self.each do |x|
+            if x.last == elem
+                return true
+            end
+        end
+    end
+
     def find(start, predicate)
 
         if predicate.call(start.value)
@@ -23,6 +31,22 @@ module BFSProcedures
 
     def path(start, predicate)
 
+        def alreadyExists(lista,elem)
+            lista.each do |x|
+                if x.last == elem
+                    return true
+                end
+            end
+        end
+
+        def getPath(lista,predicate)
+            lista.each do |x|
+                if predicate.call(x.last)
+                    return x
+                end
+            end
+        end
+
         if predicate.call(start.value)
             
             return [start.value]
@@ -34,11 +58,8 @@ module BFSProcedures
 
             open.push([start.value])
 
-            i = 0 
-
             while !open.empty?
-                puts "---------------------------------------"
-                puts "Vuelta #{i}"
+
                 close << open.shift
                 actual = close.last.clone
 
@@ -46,28 +67,39 @@ module BFSProcedures
 
                 elem = start.find(start, block)
 
-                # falta agregar que si ya en el arreglo open o close hay un camino que termine con suc.value no se agregue el camino a open"
-                block2 = lambda {|suc| if (suc != nil); aux = actual.clone; x = Array.new(aux.push(suc.value)); open.push(x); end}
+                block2 = lambda {|suc| 
+                    if (suc != nil) && self.alreadyExists(open,suc) && self.alreadyExists(close,suc)
+
+                        aux = actual.clone
+                        x = Array.new(aux.push(suc.value))
+                        open.push(x)
+                    end
+                }
+                
                 elem.each(block2)
 
-                puts "ESTE ES OPEN"
-                print open
-                puts ""
-
-                puts "ESTE ES CLOSE"
-                print close
-                puts ""
-
-                i = i + 1
             end
 
-            # falta hacer que solo retorne el camino al nodo que satisface el predicate
-            return close
+            way = getPath(close,predicate)
+            return way
         end
     end
 
     def walk(start, action)
 
+        rest = [start]
+        visits = []
+        
+        block = lambda{ |son| if son != nil; rest << son; end}
+        
+        while !rest.empty?
+            aux = rest.shift
+            a = action.call(aux.value)
+            visits.push(a)
+            aux.each(block)
+        end
+
+        return visits
     end
 
 end
@@ -124,4 +156,25 @@ class GraphNode
             end
         end
     end
+end
+
+
+class LCR
+    
+    attr_reader :value
+    
+    include BFSProcedures
+
+    def initialize(?)  # Indique los argumentos
+
+    end
+
+    def each(p)
+
+    end
+
+    def solve
+        
+    end
+
 end
