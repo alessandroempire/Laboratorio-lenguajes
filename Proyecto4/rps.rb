@@ -4,7 +4,11 @@
 # Juegos de Manos
 
 # Clase Movement
-# Se inicializa con el Movimiento deseado, Ej. Movement.new(Rock)
+# Clase genérica de movimientos posibles. Provee métodos de to_s para 
+# convertirlo a string y score para obtener la puntuación. 
+# Se crean 3 subclases de Movement: Rock, Paper, Scissors.
+# En cada subclase se emplea la técnica de despacho múltiple para encontrar
+# la respectiva puntuación de un movimiento.
 
 class Movement
     attr_reader :name
@@ -77,10 +81,10 @@ class Scissors < Movement
 end
 
 # Clase Strategy
-# name sera un String. strategy sera el nombre de la estrategia a usar. 
-# my_mov sera una lista, que lleva los movimientos del juegador
-# se necestia una lista para los movimientos del contricante. ms?
-# puedo usar push y pop....
+# name será un string con el nombre de la estrategia
+# strategy será una instancia de alguna de las estrategias. 
+# Se declara el seed = 42 la función random. 
+# Los métodos de Strategy llaman a los métodos de las instancias en @strategy.
 
 class Strategy
     @@seed = 42
@@ -105,6 +109,10 @@ class Strategy
     end
 end
 
+# Clase Uniform
+# Cada Movement tiene la misma probabilidad de ser elegido
+# Para escogerlo se emplea la función random. 
+
 class Uniform < Strategy
     attr_accessor :list, :r
 
@@ -127,9 +135,15 @@ class Uniform < Strategy
     end
 
     def reset
-        @r = Random.new(@@seed)
     end
 end
+
+# Clase Biased
+# Cada Movement tiene una probabilidad sesgada. 
+# Se analiza el rango del número random para escoger el siguiente Movement. 
+# Ejemplo: a = 1/6, b = 3/6, c = 2/6
+# Sí el numero random es 1, se elige a; sí está entre 2 y 4 se elige b;
+# sí está entre 5 y 6 se elige c.
 
 class Biased < Strategy
     attr_accessor :map, :total, :r
@@ -164,9 +178,12 @@ class Biased < Strategy
     end
 
     def reset
-        @r = Random.new(@@seed)
     end
 end
+
+# Clase Mirror
+# Para elegir un Movement, se elige el caso base cuando se comienza el juego o 
+# reinicia la estrategia, sino se escoge el último movimiento del contrincante.
 
 class Mirror < Strategy
     attr_accessor :mov, :key
@@ -194,6 +211,11 @@ class Mirror < Strategy
     end
 end
 
+# Clase Smart
+# Para elegir un Movement, se cuenta la cantidad de ocurrencias de cada Movement
+# que ha realizado el contricante, y se escoge uno tal que le gane al
+# Movement que más ha usado el contrincante.
+
 class Smart < Strategy
     attr_accessor :p, :r, :s
 
@@ -209,9 +231,6 @@ class Smart < Strategy
 
     def next(ms)
         up_count(ms.last) if ms.size != 0
-        #puts @p
-        #puts @r
-        #puts @s
         l = @p + @r + @s - 1
         n = rand(0..l)
         if n == nil
@@ -241,6 +260,11 @@ class Smart < Strategy
     end
 end
 
+# Clase Match
+# se tiene la información de cada jugador: player1 y player2
+# se tiene la lista de los movimientos realizado por cada jugador: list1 y list2
+# se tiene el scoreboard que lleva el puntaje de la partida. 
+
 class Match
     attr_accessor :player1, :list1,
                   :player2, :list2,
@@ -259,7 +283,7 @@ class Match
         @player2 = aux.pop
         @player1 = aux.pop
         @scoreboard[:Rounds] = 0
-            start_mov
+        start_mov
     end
 
     def to_s
@@ -277,7 +301,6 @@ class Match
             play
             n -= 1
         end
-        reset
         @scoreboard
     end
 
@@ -287,18 +310,14 @@ class Match
             break if @scoreboard[@player1.name] == n
             play
         end
-        reset
         @scoreboard
     end
 
     def play
-        #puts "ronda"
         m1 = @player1.next(@list2)
         m2 = @player2.next(@list1)
         @list1.push(m1)
         @list2.push(m2)
-        #puts m1.to_s
-        #puts m2.to_s
         result = m1.score(m2)
         @scoreboard[@player2.name] += result.pop
         @scoreboard[@player1.name] += result.pop
